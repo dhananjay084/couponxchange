@@ -143,7 +143,8 @@ import TodayDeal from "@/components/cards/TodaysDealCard"
   return (
     <div className="max-w-[90%] mx-auto">
     <ImageSlider/>
-    <h2 className="text-2xl font-bold">Today's Deals</h2>
+    {/* <h2 className="text-2xl font-bold">Today's Deals</h2> */}
+    <h2 className="text-2xl font-bold">Today&apos;s Deals</h2>
     <div className="w-full overflow-x-auto">
       <div className="flex gap-4 px-4 py-6">
         {coupons.map((coupon, index) => (
