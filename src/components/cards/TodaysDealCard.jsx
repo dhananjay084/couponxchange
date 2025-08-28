@@ -30,7 +30,7 @@ export default function CouponCard({
         <p className="text-sm mt-1 mb-4">{description}</p>
 
         {showCoupon && (
-          <button className="rounded-full cursor-pointer relative py-2 w-[60%] overflow-hidden border border-gray-300 bg-white px-3 text-black shadow-md transition-all before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-gray-300 before:transition-all before:duration-500 hover:text-black hover:shadow-gray-300 hover:before:left-0 hover:before:w-full">
+          <button className="rounded-full cursor-pointer relative py-2 w-[60%] overflow-hidden border border-[#ffbd59] bg-white px-3 text-[#ffbd59] shadow-md transition-all before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-[#ffbd59] before:transition-all before:duration-500 hover:text-white hover:shadow-[#ffbd59] hover:before:left-0 hover:before:w-full">
             <span className="relative z-10">Coupon code</span>
           </button>
         )}
