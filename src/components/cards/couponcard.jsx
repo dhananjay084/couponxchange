@@ -4,7 +4,8 @@ import { BiSolidOffer } from "react-icons/bi";
 
 export default function CouponCard({ discount, brand, description, image, showCoupon }) {
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden border flex flex-col">
+    <div className="min-w-[260px] bg-white rounded-xl shadow-md overflow-hidden border flex flex-col 
+    transition-transform duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2">
       {/* Discount Badge */}
       <div className="relative">
         <img src={image} alt={brand} className="w-full h-32 object-cover" />
@@ -20,9 +21,8 @@ export default function CouponCard({ discount, brand, description, image, showCo
         <p className="text-sm mt-1 mb-4">{description}</p>
 
         {showCoupon && (
-          <button className="bg-gray-200 hover:bg-gray-300 font-semibold px-4 py-2 rounded-full text-sm w-[60%]">
-            Coupon code
-          </button>
+                  <button class="rounded-full cursor-pointer text-red hover:before:bg-gray-300border-gray-300 relative py-2 w-[60%] overflow-hidden border border-gray-300 bg-white px-3 text-black shadow-2xl transition-all before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-gray-300 before:transition-all before:duration-500 hover:text-black hover:shadow-gray-300 hover:before:left-0 hover:before:w-full"><span class="relative z-10">Coupon code</span></button>
+
         )}
       </div>
     </div>

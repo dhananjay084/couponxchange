@@ -141,7 +141,7 @@ import TodayDeal from "@/components/cards/TodaysDealCard"
     },
   ];
   return (
-    <div className="max-w-[90%] mx-auto">
+    <div >
     <ImageSlider/>
     {/* <h2 className="text-2xl font-bold">Today's Deals</h2> */}
     <h2 className="text-2xl font-bold">Today&apos;s Deals</h2>
@@ -152,8 +152,10 @@ import TodayDeal from "@/components/cards/TodaysDealCard"
         ))}
       </div>
     </div>
+    <div className="flex justify-between ">
     <h2 className="text-2xl font-bold">Popular store</h2>
-
+    <p className="border-b border-[#000] cursor-pointer">View All</p>
+    </div>
         {/* Responsive Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-6 py-10">
           {brands.map((brand, index) => (

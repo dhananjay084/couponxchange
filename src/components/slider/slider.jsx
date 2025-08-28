@@ -3,6 +3,7 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -21,29 +22,26 @@ const images = [
 
 export default function ImageSlider() {
   return (
-    <div className="w-full mx-auto py-8">
+    <div className="w-full mx-auto py-8 relative overflow-visible">
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
-        spaceBetween={20} // gap between images
-        navigation
-        pagination={{ clickable: true }}
-        autoplay={{ delay: 3000, disableOnInteraction: false }}
-        loop={true} // infinite loop
-        breakpoints={{
-          0: {
-            slidesPerView: 1,
-            slidesPerGroup: 1,
-          },
-          640: {
-            slidesPerView: 2,
-            slidesPerGroup: 2,
-          },
-          1024: {
-            slidesPerView: 3,
-            slidesPerGroup: 3,
-          },
-        
+        spaceBetween={20}
+        navigation={{
+          nextEl: ".custom-next",
+          prevEl: ".custom-prev",
         }}
+        pagination={{
+          clickable: true,
+          el: ".custom-pagination",
+        }}
+        autoplay={{ delay: 3000, disableOnInteraction: false }}
+        loop={true}
+        breakpoints={{
+          0: { slidesPerView: 1, slidesPerGroup: 1 },
+          640: { slidesPerView: 2, slidesPerGroup: 2 },
+          1024: { slidesPerView: 3, slidesPerGroup: 3 },
+        }}
+        className="overflow-visible" // 👈 allow arrows outside
       >
         {images.map((img, index) => (
           <SwiperSlide key={index}>
@@ -55,6 +53,17 @@ export default function ImageSlider() {
           </SwiperSlide>
         ))}
       </Swiper>
+
+      {/* Custom Navigation Arrows (Desktop) */}
+      <button className="custom-prev hidden md:flex absolute -left-8 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center rounded-full border border-gray-400 bg-white shadow-md hover:bg-gray-100 transition z-50">
+        <FiChevronLeft size={20} />
+      </button>
+      <button className="custom-next hidden md:flex absolute -right-8 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center rounded-full border border-gray-400 bg-white shadow-md hover:bg-gray-100 transition z-50">
+        <FiChevronRight size={20} />
+      </button>
+
+      {/* Pagination Dots (Mobile) */}
+      <div className="custom-pagination flex justify-center mt-4 md:hidden relative z-50" />
     </div>
   );
 }
