@@ -58,7 +58,7 @@ const page = () => {
           <button
             key={letter}
             onClick={() => scrollTo(letter)}
-            className='cursor-pointer w-10 h-10 flex items-center justify-center rounded-full bg-[#ffbd59] text-white font-bold hover:bg-gray-800 transition'
+            className='cursor-pointer w-10 h-10 flex items-center justify-center rounded-full bg-[#181717] text-white font-bold hover:bg-gray-800 transition'
           >
             {letter}
           </button>
@@ -76,10 +76,10 @@ const page = () => {
     <h2 className='text-2xl font-bold border-b pb-2 mb-4'>{letter}</h2>
     <ul className='flex flex-wrap gap-3'>
       {demoData[letter]?.map((store, idx) => (
-        <li className="rounded-md cursor-pointer relative py-2  overflow-hidden border border-[#ffbd59] bg-white px-3 text-[#ffbd59] shadow-md transition-all before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-[#ffbd59] before:transition-all before:duration-500 hover:text-white hover:shadow-[#ffbd59] hover:before:left-0 hover:before:w-full">
+        <li className="rounded-md cursor-pointer relative py-2  overflow-hidden border border-[#181717] bg-white px-3 text-[#181717] shadow-md transition-all before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-[#181717] before:transition-all before:duration-500 hover:text-white hover:shadow-[#181717] hover:before:left-0 hover:before:w-full">
         <span className="relative z-10 flex items-center gap-2"><LiaStoreSolid/>{store}</span>
       </li>
-      )) || <li className='text-[#ffbd59] italic'>No stores available</li>}
+      )) || <li className='text-[#181717] italic'>No stores available</li>}
     </ul>
   </div>
 ))}

@@ -21,7 +21,7 @@ export default function CouponCard({ discount, brand, description, image, showCo
         <p className="text-sm mt-1 mb-4">{description}</p>
 
         {showCoupon && (
-                  <button class="rounded-full cursor-pointer  hover:before:bg-[#ffbd59]border-[#ffbd59] relative py-2 w-[60%] overflow-hidden border border-[#ffbd59] bg-white px-3 text-[#ffbd59] shadow-2xl transition-all before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-[#ffbd59] before:transition-all before:duration-500 hover:text-white hover:shadow-[#ffbd59] hover:before:left-0 hover:before:w-full"><span class="relative z-10">Coupon code</span></button>
+                  <button class="rounded-full cursor-pointer  hover:before:bg-[#181717]border-[#181717] relative py-2 w-[60%] overflow-hidden border border-[#181717] bg-white px-3 text-[#181717] shadow-2xl transition-all before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-[#181717] before:transition-all before:duration-500 hover:text-white hover:shadow-[#181717] hover:before:left-0 hover:before:w-full"><span class="relative z-10">Coupon code</span></button>
 
         )}
       </div>

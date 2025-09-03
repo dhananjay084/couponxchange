@@ -28,7 +28,7 @@ export default function Header() {
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-        isScrolled ? "bg-[#ffbd59] shadow-md py-2" : "bg-black py-4"
+        isScrolled ? "bg-[#181717] shadow-md py-2" : "bg-black py-4"
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6">
@@ -49,13 +49,13 @@ export default function Header() {
             <Link key={index} href={link.href}>
               <span
                 className={`relative text-sm font-medium tracking-wide cursor-pointer transition-colors group ${
-                  isScrolled ? "text-gray-800" : "text-white"
+                  isScrolled ? "text-white" : "text-white"
                 }`}
               >
                 {link.name}
                 <span
                   className={`absolute left-0 -bottom-1 h-[2px] w-0 transition-all duration-300 group-hover:w-full ${
-                    isScrolled ? "bg-white" : "bg-[#ffbd59]"
+                    isScrolled ? "bg-white" : "bg-[#181717]"
                   }`}
                 ></span>
               </span>
@@ -93,7 +93,7 @@ export default function Header() {
       {isMobileMenuOpen && (
         <div
           className={`md:hidden w-full px-6 pb-4 transition-all duration-300 ${
-            isScrolled ? "bg-[#ffbd59]" : "bg-black"
+            isScrolled ? "bg-[#181717]" : "bg-black"
           }`}
         >
           <div className="flex flex-col gap-4 mt-4">
