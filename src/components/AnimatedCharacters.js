@@ -1,4 +1,3 @@
-// components/AnimatedCharacters.js
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -8,7 +7,7 @@ const shapes = ['circle', 'rectangle', 'hemisphere'];
 
 const getRandomShape = () => shapes[Math.floor(Math.random() * shapes.length)];
 
-const Character = ({ mousePos, delay }) => {
+const Character = ({ mousePos, delay, isClient }) => {
   const [shape, setShape] = useState(getRandomShape());
 
   useEffect(() => {
@@ -19,36 +18,38 @@ const Character = ({ mousePos, delay }) => {
   }, []);
 
   const eyePosition = (offsetX, offsetY) => {
+    if (!isClient) return { transform: 'translate(0, 0)' };
+
     const moveX = ((mousePos.x - window.innerWidth / 4) / window.innerWidth) * 10;
     const moveY = ((mousePos.y - window.innerHeight / 2) / window.innerHeight) * 10;
+
     return {
-      transform: `translate(${moveX + offsetX}px, ${moveY + offsetY}px)`
+      transform: `translate(${moveX + offsetX}px, ${moveY + offsetY}px)`,
     };
   };
 
   let shapeStyles = {
     width: '120px',
     height: '120px',
-    backgroundColor: '#f97316', // default orange
+    backgroundColor: '#f97316',
     borderRadius: '0%',
-    margin: '4px',
+    margin: '8px',
     position: 'relative',
     transition: 'all 0.4s ease',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   };
 
-  // Shape-specific styling
   switch (shape) {
     case 'circle':
       shapeStyles.borderRadius = '50%';
-      shapeStyles.backgroundColor = '#f97316'; // orange
+      shapeStyles.backgroundColor = '#f97316';
       break;
     case 'rectangle':
       shapeStyles.borderRadius = '12px';
       shapeStyles.height = '160px';
-      shapeStyles.backgroundColor = '#8b5cf6'; // purple
+      shapeStyles.backgroundColor = '#8b5cf6';
       break;
     case 'hemisphere':
       shapeStyles.borderTopLeftRadius = '60px';
@@ -56,7 +57,7 @@ const Character = ({ mousePos, delay }) => {
       shapeStyles.borderBottomLeftRadius = '0';
       shapeStyles.borderBottomRightRadius = '0';
       shapeStyles.height = '60px';
-      shapeStyles.backgroundColor = '#facc15'; // yellow
+      shapeStyles.backgroundColor = '#facc15';
       break;
   }
 
@@ -77,7 +78,7 @@ const Character = ({ mousePos, delay }) => {
           position: 'absolute',
           top: '30%',
           left: '28%',
-          ...eyePosition(-4, -4)
+          ...eyePosition(-4, -4),
         }}
       />
       <div
@@ -89,7 +90,7 @@ const Character = ({ mousePos, delay }) => {
           position: 'absolute',
           top: '30%',
           right: '28%',
-          ...eyePosition(4, -4)
+          ...eyePosition(4, -4),
         }}
       />
     </motion.div>
@@ -98,26 +99,35 @@ const Character = ({ mousePos, delay }) => {
 
 export default function AnimatedCharacters() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
+
     const handleMouseMove = (event) => {
       setMousePos({ x: event.clientX, y: event.clientY });
     };
+
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
+  if (!isClient) return null; // ⛔ Prevent SSR errors
+
   return (
-    <div style={{
-      display: 'flex',
-      flexWrap: 'wrap',
-      justifyContent: 'center',
-      alignItems: 'flex-end',
-      padding: '10px',
-      maxWidth: '400px'
-    }}>
+    <div
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        padding: '10px',
+        maxWidth: '400px',
+        margin: '0 auto',
+      }}
+    >
       {[0, 1, 2, 3].map((i) => (
-        <Character key={i} mousePos={mousePos} delay={i * 0.3} />
+        <Character key={i} mousePos={mousePos} delay={i * 0.3} isClient={isClient} />
       ))}
     </div>
   );
