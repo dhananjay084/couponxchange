@@ -226,7 +226,7 @@ import RetailerPartners from "@/components/RetailerPartners";
       {/* Featured Coupons & Deals (NOT slider) */}
       <h2 className="text-2xl font-bold px-4">Browse our featured vouchers for more exclusive savings. Never pay full price again!
       </h2>
-      <p className="px-4">There are so many ways you can save money when you buy online. We've made it even easier to find offers at your chosen shops!
+      <p className="px-4">There are so many ways you can save money when you buy online. We have made it even easier to find offers at your chosen shops!
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-6 px-4">
         {coupons.map((coupon, index) => (
@@ -235,7 +235,7 @@ import RetailerPartners from "@/components/RetailerPartners";
       </div>
       <h2 className="text-2xl font-bold px-4">Browse our featured vouchers for more exclusive savings. Never pay full price again!
       </h2>
-      <p className="px-4">There are so many ways you can save money when you buy online. We've made it even easier to find offers at your chosen shops!
+      <p className="px-4">There are so many ways you can save money when you buy online. We have made it even easier to find offers at your chosen shops!
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-6 px-4">
         {coupons.map((coupon, index) => (
@@ -244,7 +244,7 @@ import RetailerPartners from "@/components/RetailerPartners";
       </div>
       <h2 className="text-2xl font-bold px-4">Browse our featured vouchers for more exclusive savings. Never pay full price again!
       </h2>
-      <p className="px-4">There are so many ways you can save money when you buy online. We've made it even easier to find offers at your chosen shops!
+      <p className="px-4">There are so many ways you can save money when you buy online. We have made it even easier to find offers at your chosen shops!
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-6 px-4">
         {coupons.map((coupon, index) => (
