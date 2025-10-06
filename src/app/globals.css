@@ -1,3 +1,27 @@
 @import "tailwindcss";
 
 /*  */
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  font-size: 14px !important; /* smaller arrows */
+}
+.swiper-pagination-bullet {
+  background: #000 !important; /* black dots */
+  opacity: 0.5;
+}
+.swiper-pagination-bullet-active {
+  background: #f97316 !important; /* orange active dot */
+  opacity: 1;
+}
+.swiper {
+    padding-top: 1rem;   /* space above */
+    padding-bottom: 2rem; /* space below for arrows/dots */
+  }
+  
+  .swiper-slide {
+    display: flex;
+    align-items: stretch; /* make cards equal height */
+  }
+  .swiper-wrapper{
+    padding: 10px 0;
+  }

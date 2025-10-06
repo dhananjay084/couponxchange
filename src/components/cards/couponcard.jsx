@@ -1,30 +1,121 @@
-import React from "react";
-import { FaFire } from "react-icons/fa";
-import { BiSolidOffer } from "react-icons/bi";
+"use client";
+import React, { useState } from "react";
+import { FaTimes } from "react-icons/fa";
+import ReactDOM from "react-dom";
 
-export default function CouponCard({ discount, brand, description, image, showCoupon }) {
+
+export default function CouponCard({
+  discount,
+  brand,
+  description,
+  image,
+  logo,
+  exclusive,
+  code,
+  expiration,
+  showCoupon,
+}) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    alert("Coupon code copied!");
+  };
+
   return (
-    <div className="min-w-[260px] bg-white rounded-xl shadow-md overflow-hidden border flex flex-col 
-    transition-transform duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2">
-      {/* Discount Badge */}
-      <div className="relative">
-        <img src={image} alt={brand} className="w-full h-32 object-cover" />
-        <div className="absolute top-2 left-2 bg-white text-black px-2 py-1 rounded-md flex items-center gap-1 text-sm font-semibold shadow">
-          <BiSolidOffer className="text-yellow-500" />
-          {discount} Off
-        </div>
+    <>
+      {/* Coupon Card */}
+      <div
+  className="min-w-[260px] bg-white rounded-xl shadow-md overflow-hidden flex flex-col 
+  transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2 h-[350px] relative"
+>
+  {/* Top Section */}
+  <div className="relative">
+    <img src={image} alt={brand} className="w-full h-40 object-cover" />
+
+    {exclusive && (
+      <div className="absolute top-2 right-2 bg-black text-white px-2 py-1 text-xs font-bold rounded shadow">
+        {exclusive.toUpperCase()}
       </div>
+    )}
 
-      {/* Card Content */}
-      <div className="p-4 flex flex-col justify-between flex-grow">
-        <h3 className="font-bold text-sm uppercase">{brand}</h3>
-        <p className="text-sm mt-1 mb-4">{description}</p>
-
-        {showCoupon && (
-                  <button class="rounded-full cursor-pointer  hover:before:bg-[#181717]border-[#181717] relative py-2 w-[60%] overflow-hidden border border-[#181717] bg-white px-3 text-[#181717] shadow-2xl transition-all before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-[#181717] before:transition-all before:duration-500 hover:text-white hover:shadow-[#181717] hover:before:left-0 hover:before:w-full"><span class="relative z-10">Coupon code</span></button>
-
-        )}
-      </div>
+    {/* Brand Logo */}
+    <div className="absolute bottom-2 left-2 bg-white p-1 rounded shadow">
+      <img src={logo} alt={`${brand} logo`} className="w-8 h-8 object-contain" />
     </div>
+  </div>
+
+  {/* Content */}
+  <div className="p-4 pb-10 flex flex-col flex-grow">
+    <div className="flex justify-between items-start mb-2">
+      {showCoupon && (
+        <p
+          onClick={() => setIsModalOpen(true)}
+          className="cursor-pointer text-orange-500 font-semibold"
+        >
+          Code
+        </p>
+      )}
+      <p className="text-sm text-gray-500">{brand}</p>
+    </div>
+
+    <h3 className="font-bold text-lg">{discount}</h3>
+    <p className="text-sm mt-1 mb-2 line-clamp-3">{description}</p>
+  </div>
+
+  {/* Expiry at Bottom Left */}
+  <p className="absolute bottom-3 left-4 text-xs text-gray-400">
+    Expires: {expiration}
+  </p>
+</div>
+
+
+      {/* Modal */}
+      {isModalOpen &&
+  ReactDOM.createPortal(
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
+      <div className="bg-white rounded-xl shadow-lg p-6 max-w-md w-full relative">
+        {/* Close Button */}
+        <button
+          className="absolute top-3 right-3 text-gray-600 hover:text-black"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <FaTimes />
+        </button>
+
+        {/* Brand Logo */}
+        <div className="flex items-center gap-2 mb-4">
+          <img
+            src={logo}
+            alt={`${brand} logo`}
+            className="w-10 h-10 object-contain"
+          />
+          <h2 className="font-bold text-lg">{brand}</h2>
+        </div>
+
+        {/* Modal Content */}
+        <p className="mb-4">{description}</p>
+
+        {/* Coupon Code Box */}
+        <div className="flex items-center border border-dashed border-orange-500 rounded-md overflow-hidden">
+          <span className="flex-1 text-center py-2 font-bold">{code}</span>
+          <button
+            className="bg-orange-500 text-white px-4 py-2 hover:bg-orange-600 transition"
+            onClick={handleCopy}
+          >
+            Copy Code
+          </button>
+        </div>
+
+        {/* Shop Link */}
+        <button className="mt-4 text-orange-500 font-semibold hover:underline">
+          Go to shop
+        </button>
+      </div>
+    </div>,
+    document.body // 👈 renders modal at root, ignoring parent constraints
+  )}
+
+    </>
   );
 }
