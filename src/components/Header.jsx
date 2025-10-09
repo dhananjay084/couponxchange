@@ -52,10 +52,18 @@ export default function Header() {
             </div>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-2 rounded-full font-medium hover:scale-105 transition-transform duration-300"
+              className="cursor-pointer bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-2 rounded-full font-medium hover:scale-105 transition-transform duration-300"
             >
               Submit Coupon
             </button>
+            <Link href="/login">
+            <button
+              // onClick={() => setIsModalOpen(true)}
+              className="cursor-pointer bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-2 rounded-full font-medium hover:scale-105 transition-transform duration-300"
+            >
+              Login/Sign Up
+            </button>
+            </Link>
           </div>
 
           {/* Mobile Hamburger */}
