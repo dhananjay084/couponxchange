@@ -6,33 +6,41 @@ import Link from 'next/link';
 import Logo from '../assets/full-logo.png';
 import { HiOutlineMenuAlt3 } from 'react-icons/hi';
 import { FiSearch } from 'react-icons/fi';
+import { IoChevronDownOutline } from 'react-icons/io5';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(false);
 
   const navLinks = [
     { name: 'Stores', href: '/stores' },
     { name: 'Categories', href: '/category' },
     { name: 'Blog', href: '/blogs' },
     { name: 'Deals', href: '/deals/:id' },
-    { name: 'Category', href: '/category/:id' }
+    { name: 'Category', href: '/category/:id' },
+  ];
 
+  const adminLinks = [
+    { name: 'Add Deals', href: '/admin/deals' },
+    { name: 'Add Store', href: '/admin/store' },
+    { name: 'Add Category', href: '/admin/category' },
 
   ];
 
   return (
     <>
       {/* HEADER */}
-      <header className="fixed top-0 left-0 w-full z-[100]  bg-[#181717] border-b border-white/10 shadow-md">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-6 ">
+      <header className="fixed top-0 left-0 w-full z-[100] bg-[#181717] border-b border-white/10 shadow-md">
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-6">
           {/* Left: Logo + Nav */}
           <div className="flex items-center gap-10">
             <Link href="/">
               <Image src={Logo} alt="Logo" width={140} height={50} />
             </Link>
 
-            <nav className="hidden md:flex items-center gap-6">
+            {/* DESKTOP NAV */}
+            <nav className="hidden md:flex items-center gap-6 relative">
               {navLinks.map((link, index) => (
                 <Link key={index} href={link.href}>
                   <span className="relative text-sm font-medium tracking-wide cursor-pointer text-white group">
@@ -41,10 +49,35 @@ export default function Header() {
                   </span>
                 </Link>
               ))}
+
+              {/* ADMIN DROPDOWN */}
+              <div className="relative">
+                <button
+                  onClick={() => setIsAdminDropdownOpen(!isAdminDropdownOpen)}
+                  className="flex items-center gap-1 text-sm font-medium text-white hover:text-gray-200"
+                >
+                  Admin <IoChevronDownOutline className="mt-[1px]" />
+                </button>
+
+                {isAdminDropdownOpen && (
+                  <div className="absolute top-8 left-0 bg-white text-black rounded-md shadow-lg w-40 z-50 overflow-hidden">
+                    {adminLinks.map((link, idx) => (
+                      <Link
+                        key={idx}
+                        href={link.href}
+                        onClick={() => setIsAdminDropdownOpen(false)}
+                        className="block px-4 py-2 hover:bg-gray-100"
+                      >
+                        {link.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             </nav>
           </div>
 
-          {/* Right: Search + Submit Coupon */}
+          {/* Right: Search + Buttons */}
           <div className="hidden md:flex items-center gap-4 flex-1 justify-end">
             <div className="relative w-64">
               <input
@@ -61,12 +94,9 @@ export default function Header() {
               Submit Coupon
             </button>
             <Link href="/login">
-            <button
-              // onClick={() => setIsModalOpen(true)}
-              className="cursor-pointer bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-2 rounded-full font-medium hover:scale-105 transition-transform duration-300"
-            >
-              Login/Sign Up
-            </button>
+              <button className="cursor-pointer bg-gradient-to-r from-orange-500 to-pink-500 text-white px-5 py-2 rounded-full font-medium hover:scale-105 transition-transform duration-300">
+                Login / Sign Up
+              </button>
             </Link>
           </div>
 
@@ -81,7 +111,7 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Dropdown */}
+        {/* MOBILE MENU */}
         {isMobileMenuOpen && (
           <div className="md:hidden w-full px-6 pb-6 bg-black border-t border-white/10">
             <div className="flex flex-col gap-4 mt-4">
@@ -95,6 +125,33 @@ export default function Header() {
                   {link.name}
                 </Link>
               ))}
+
+              {/* ADMIN DROPDOWN MOBILE */}
+              <div>
+                <button
+                  onClick={() => setIsAdminDropdownOpen(!isAdminDropdownOpen)}
+                  className="flex items-center justify-between text-sm font-medium text-white w-full"
+                >
+                  Admin
+                  <IoChevronDownOutline
+                    className={`transition-transform ${isAdminDropdownOpen ? 'rotate-180' : ''}`}
+                  />
+                </button>
+                {isAdminDropdownOpen && (
+                  <div className="mt-2 flex flex-col gap-2 pl-4">
+                    {adminLinks.map((link, idx) => (
+                      <Link
+                        key={idx}
+                        href={link.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="text-sm text-gray-300 hover:text-white"
+                      >
+                        {link.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               <div className="relative">
                 <input
@@ -134,7 +191,7 @@ export default function Header() {
               <input
                 type="text"
                 placeholder="Store name"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none "
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
               />
               <input
                 type="text"
@@ -144,7 +201,7 @@ export default function Header() {
               <textarea
                 placeholder="Description (optional)"
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none "
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
               />
               <button
                 type="submit"
