@@ -84,7 +84,7 @@ const DealForm = ({ editingDeal, setEditingDeal }) => {
           <Field as="select" name="dealStore" className="border p-2">
             <option value="">Select Store</option>
             {stores.map((store) => (
-              <option key={store._id} value={store._id}>
+              <option key={store._id} value={store.storeName || store.name}>
                 {store.storeName || store.name}
               </option>
             ))}
@@ -96,7 +96,7 @@ const DealForm = ({ editingDeal, setEditingDeal }) => {
           <Field as="select" name="dealCategory" className="border p-2">
             <option value="">Select Category</option>
             {categories.map((cat) => (
-              <option key={cat._id} value={cat._id}>
+              <option key={cat._id} value={cat.categoryName || cat.name}>
                 {cat.categoryName || cat.name}
               </option>
             ))}
