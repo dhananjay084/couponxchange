@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchDeals, deleteDealById } from "../../../features/deal/dealSlice";
 import AddForm from "../../../components/DealForm";
 import { Toaster } from "react-hot-toast";
-
+import BulkDealUpload from "@/components/BulkDealUpload";
 const DealList = () => {
   const dispatch = useDispatch();
   const { deals = [], status, error } = useSelector((state) => state.deals);
@@ -21,6 +21,7 @@ const DealList = () => {
     <div className="p-8 bg-gray-50 min-h-screen">
       <Toaster position="top-right" />
       <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">All Deals</h2>
+      <BulkDealUpload />
 
       <div className="overflow-x-auto shadow-md rounded-lg bg-white mb-10">
         <table className="min-w-full border border-gray-200 text-sm">

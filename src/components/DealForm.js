@@ -113,6 +113,8 @@ const DealForm = ({ editingDeal, setEditingDeal }) => {
             <option value="2nd Section">2nd Section</option>
             <option value="3rd Section">3rd Section</option>
             <option value="4th Section">4th Section</option>
+            <option value="4th Section">None</option>
+
           </Field>
 
           <button
