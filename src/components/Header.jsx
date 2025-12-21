@@ -25,6 +25,8 @@ export default function Header() {
     { name: 'Add Deals', href: '/admin/deals' },
     { name: 'Add Store', href: '/admin/store' },
     { name: 'Add Category', href: '/admin/category' },
+    { name: 'Add Blogs', href: '/admin/blog' },
+
 
   ];
 
