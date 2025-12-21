@@ -59,7 +59,7 @@ export default function BlogDetailPage() {
       <main className="max-w-6xl mx-auto px-4 py-12">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Blog not found</h1>
-          <p className="text-gray-600">The blog you're looking for doesn't exist.</p>
+          <p className="text-gray-600">The blog does not exist.</p>
           <Link 
             href="/blogs" 
             className="mt-4 inline-block text-blue-600 hover:text-blue-800"
