@@ -1,6 +1,7 @@
 'use client'
 import React, { useRef, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useRouter } from 'next/navigation'
 import { fetchStores } from '@/api/storeApi'
 import { LiaStoreSolid } from "react-icons/lia"
 
@@ -8,6 +9,7 @@ const alphabets = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '0-9']
 
 const Page = () => {
   const dispatch = useDispatch()
+  const router = useRouter()
   const { stores = [], status, error } = useSelector((state) => state.stores)
   const refs = useRef({})
 
@@ -15,22 +17,38 @@ const Page = () => {
     dispatch(fetchStores())
   }, [dispatch])
 
-  // Group stores alphabetically
+  // Group stores alphabetically - now storing full store objects
   const groupedStores = useMemo(() => {
     const groups = Object.fromEntries(alphabets.map(letter => [letter, []]))
     stores.forEach(store => {
       const name = store.storeName?.trim() || ""
-      if (!name) return
+      if (!name || !store._id) return
       const firstChar = name[0].toUpperCase()
       const key = /^[A-Z]$/.test(firstChar) ? firstChar : '0-9'
-      groups[key].push(name)
+      groups[key].push({
+        name: name,
+        id: store._id,
+        storeData: store // Store full object for any future use
+      })
     })
+    
+    // Sort each group alphabetically by store name
+    Object.keys(groups).forEach(key => {
+      groups[key].sort((a, b) => a.name.localeCompare(b.name))
+    })
+    
     return groups
   }, [stores])
 
   const scrollTo = (key) => {
     const section = refs.current[key]
     if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  const handleStoreClick = (storeId) => {
+    if (storeId) {
+      router.push(`/store/${storeId}`)
+    }
   }
 
   if (status === "loading") return <p className="text-center py-10">Loading stores...</p>
@@ -67,13 +85,21 @@ const Page = () => {
             <h2 className='text-2xl font-bold border-b pb-2 mb-4'>{letter}</h2>
             <ul className='flex flex-wrap gap-3'>
               {groupedStores[letter]?.length > 0 ? (
-                groupedStores[letter].map((storeName, idx) => (
+                groupedStores[letter].map((store, idx) => (
                   <li
-                    key={idx}
+                    key={store.id || idx}
+                    onClick={() => handleStoreClick(store.id)}
                     className="rounded-md cursor-pointer relative py-2 overflow-hidden border border-[#181717] bg-white px-3 text-[#181717] shadow-md transition-all before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-[#181717] before:transition-all before:duration-500 hover:text-white hover:shadow-[#181717] hover:before:left-0 hover:before:w-full"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        handleStoreClick(store.id)
+                      }
+                    }}
                   >
                     <span className="relative z-10 flex items-center gap-2">
-                      <LiaStoreSolid /> {storeName}
+                      <LiaStoreSolid /> {store.name}
                     </span>
                   </li>
                 ))

@@ -146,6 +146,7 @@ export default function Home() {
               key={store._id}
               image={store.storeLogo}
               cashback={store.storeName}
+              id={store?._id}
             />
           ))
         ) : (
@@ -239,7 +240,7 @@ export default function Home() {
           description="Take a look at the shops most loved by our customers"
           retailers={homePageStores.map((store) => ({
             name: store.storeName,
-            url: "#", // you can later add actual links
+            url: `/store/${store?._id}`, // you can later add actual links
           }))}
         />
       )}
@@ -251,6 +252,8 @@ export default function Home() {
             name: cat.categoryName,
             url: "#",
           }))}
+         
+
         />
       ) : (
         <p className="text-center text-gray-500 py-6">

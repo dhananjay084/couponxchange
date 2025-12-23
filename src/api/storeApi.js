@@ -41,3 +41,14 @@ export const deleteStore = createAsyncThunk("stores/delete", async (id) => {
   if (!res.ok) throw new Error("Failed to delete store");
   return id;
 });
+
+// src/features/store/storeApi.js - Add this function
+// ✅ Fetch single store by ID
+export const fetchStoreById = createAsyncThunk(
+  "stores/fetchById",
+  async (id) => {
+    const res = await fetch(`${API_URL}/${id}`);
+    if (!res.ok) throw new Error("Failed to fetch store");
+    return res.json();
+  }
+);

@@ -17,7 +17,7 @@ export default function Header() {
     { name: 'Stores', href: '/stores' },
     { name: 'Categories', href: '/category' },
     { name: 'Blog', href: '/blogs' },
-    { name: 'Deals', href: '/deals/:id' },
+    // { name: 'Deals', href: '/deals/:id' },
     { name: 'Category', href: '/category/:id' },
   ];
 
