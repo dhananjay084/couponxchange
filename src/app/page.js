@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect ,useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDeals } from "@/features/deal/dealSlice";
 import { fetchStores } from "@/api/storeApi";
 import { fetchCategories } from "@/api/categoryApi"; // ✅ Import Category API thunk
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import ImageSlider from "@/components/slider/slider";
 import CouponCard from "@/components/cards/couponcard";
 import StoreCard from "@/components/cards/storecard";
@@ -24,6 +24,7 @@ export default function Home() {
   const { deals = [], status, error } = useSelector((state) => state.deals);
   const { stores = [] } = useSelector((state) => state.stores);
   const { categories = [] } = useSelector((state) => state.categories); // ✅ get categories from store
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     dispatch(fetchDeals());
@@ -355,6 +356,80 @@ export default function Home() {
           ))}
         </div>
       </div>
+      <div className="max-w-5xl mx-auto px-4 py-12">
+      <h2 className="text-3xl font-bold mb-6">
+        How can discount codes help me?
+      </h2>
+
+      <div
+        className={`relative overflow-hidden transition-all duration-500 ease-in-out ${
+          expanded ? "max-h-[3000px]" : "max-h-[260px]"
+        }`}
+      >
+        <div className="space-y-6 text-gray-700 text-lg leading-relaxed">
+          <p className="font-semibold text-xl">
+            At hotukdeals, saving you money is our mission!
+          </p>
+
+          <p>
+            We’re a team of people who are just like you, we love saving money!
+          </p>
+
+          <p>
+            One of our favourite ways to make savings is by finding and sharing
+            discount codes with you – no matter what you’re purchasing or where
+            you’re intending to spend, we do our best to get you the best deal
+            possible.
+          </p>
+
+          <p>
+            Voucher codes are a specific code or word that you can redeem on a
+            retailer’s website to save money on your purchase.
+          </p>
+
+          <p>
+            You can expect to find a wide variety of promo codes, ranging from
+            percentage-based discounts to specific fixed money off (e.g. £10
+            off), as well as codes that give you free delivery.
+          </p>
+
+          <p>
+            From Black Friday to Cyber Monday, Christmas, and summer sales,
+            we’re your go-to source for the hottest deals all year round.
+          </p>
+
+          <h3 className="text-2xl font-semibold text-gray-900">
+            How do I use a hotukdeals discount code?
+          </h3>
+
+          <ol className="list-decimal list-inside space-y-3">
+            <li>Browse hotukdeals to find your favourite voucher code.</li>
+            <li>Click the code, copy it, and visit the retailer’s site.</li>
+            <li>Add items to your cart and proceed to checkout.</li>
+            <li>Paste the code into the discount code box.</li>
+            <li>Complete payment and enjoy your savings!</li>
+          </ol>
+
+          <p className="font-semibold text-gray-900">
+            Our team of editors curates and hand-tests every discount code we publish.
+          </p>
+        </div>
+
+        {/* Fade overlay when collapsed */}
+        {!expanded && (
+          <div className="absolute bottom-0 left-0 w-full h-24  pointer-events-none" />
+        )}
+      </div>
+
+      {/* Toggle Button */}
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="mt-6 flex items-center gap-2 text-orange-600 font-semibold hover:underline"
+      >
+        {expanded ? "See less" : "See more"}
+        {expanded ? <FiChevronUp /> : <FiChevronDown />}
+      </button>
+    </div>
     </div>
   );
 }
