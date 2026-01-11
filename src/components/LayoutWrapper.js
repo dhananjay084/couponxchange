@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Header from "./Header";
+import Footer from "./Footer";
 import ScrollToTop from "./ScrillToTop";
 import { Provider } from "react-redux";
 import { store } from "../app/store";
@@ -23,6 +24,8 @@ export default function LayoutWrapper({ children }) {
           </Provider>
         </div>
       </main>
+      {!shouldHideHeader && <Footer />}
+
     </>
   );
 }

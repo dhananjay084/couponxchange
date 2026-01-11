@@ -18,6 +18,7 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import Link from "next/link";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -96,6 +97,9 @@ export default function Home() {
 
       {/* ========== 🟩 1st Section (Today’s Deals) ========== */}
       <h2 className="text-2xl font-bold px-4">Today&apos;s Deals</h2>
+      <p className="text-justify px-4 mt-2">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+
+</p>
       <div className="px-4 py-6">
   {firstSectionDeals.length > 0 ? (
     <div
@@ -135,7 +139,11 @@ export default function Home() {
       {/* ========== 🟦 Popular Stores ========== */}
       <div className="flex justify-between px-4">
         <h2 className="text-2xl font-bold">Popular Stores</h2>
-        <p className="border-b border-[#000] cursor-pointer">View All</p>
+        <Link href="/stores">
+  <p className="border-b border-[#000] cursor-pointer hover:text-blue-600 transition">
+    View All
+  </p>
+</Link>
       </div>
     
       <div className="py-10 px-4 relative overflow-visible">
@@ -192,6 +200,8 @@ export default function Home() {
 
       {/* ========== 🟨 2nd Section ========== */}
       <h2 className="text-2xl font-bold px-4">Featured Vouchers - Section 2</h2>
+      <p className="text-justify px-4 mt-2">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+  </p>
       <div className="px-4 py-6">
   {secondSectionDeals.length > 0 ? (
     <div
@@ -235,6 +245,8 @@ export default function Home() {
 
       {/* ========== 🟧 3rd Section ========== */}
       <h2 className="text-2xl font-bold px-4">Exclusive Offers - Section 3</h2>
+      <p className="text-justify px-4 mt-2">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+      </p>
       <div className="px-4 py-6">
   {thirdSectionDeals.length > 0 ? (
     <div
@@ -277,7 +289,8 @@ export default function Home() {
 
       {/* ========== 🟥 4th Section ========== */}
       <h2 className="text-2xl font-bold px-4">Hot Deals - Section 4</h2>
-   
+      <p className="text-justify px-4 mt-2">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+      </p>
       <div className="px-4 py-6">
   {fourthSectionDeals.length > 0 ? (
     <div
