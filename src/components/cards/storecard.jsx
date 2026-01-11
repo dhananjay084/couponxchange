@@ -6,11 +6,11 @@ export default function CashbackCard({ image, cashback, id }) {
     <Link href={`/store/${id}`} passHref>
       <div
         className="flex flex-col items-center min-w-[120px] 
-        transition-transform duration-300 ease-in-out hover:-translate-y-2 bg-white rounded-xl p-4 cursor-pointer"
+        transition-transform duration-300 ease-in-out hover:-translate-y-2 bg-white rounded-md p-4 cursor-pointer"
         role="link"
       >
         {/* Circle Logo */}
-        <div className="w-28 h-28 border flex items-center justify-center overflow-hidden shadow">
+        <div className="w-28 h-28  flex items-center justify-center overflow-hidden ">
           <img 
             src={image} 
             alt="brand" 

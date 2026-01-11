@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
 /*  */
+body{
+  background-color: #f4f4f4;
+}
 .swiper-button-prev::after,
 .swiper-button-next::after {
   font-size: 14px !important; /* smaller arrows */

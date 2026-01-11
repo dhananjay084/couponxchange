@@ -7,7 +7,7 @@ export default function CashbackCard({ image, name }) {
       transition-transform duration-300 ease-in-out hover:-translate-y-2 bg-white rounded-xl p-4 cursor-pointer"
     >
       {/* Circle Logo */}
-      <div className="w-28 h-28 rounded-full border flex items-center justify-center overflow-hidden shadow p-4">
+      <div className="w-28 h-28 rounded-full  flex items-center justify-center overflow-hidden  p-4">
         <img src={image} alt="brand" className="w-full h-full object-contain" />
       </div>
 

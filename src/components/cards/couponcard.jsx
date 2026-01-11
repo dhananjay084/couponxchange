@@ -34,7 +34,7 @@ export default function CouponCard({
     <>
       {/* Coupon Card */}
       <div
-        className="min-w-[260px] bg-white rounded-xl shadow-md overflow-hidden flex flex-col 
+        className="min-w-[260px] bg-white rounded-md shadow-md overflow-hidden flex flex-col 
         transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2 h-[350px] relative"
       >
         <div className="relative">
