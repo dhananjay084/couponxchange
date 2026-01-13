@@ -1,29 +1,24 @@
-// src/components/BlogCard.jsx
-import React from "react";
+import Link from "next/link";
 
-const BlogCard = ({ image, title, description, buttonText }) => {
+export default function BlogCard({ image, title, description, slug }) {
   return (
-    <div className="bg-white shadow-md rounded-xl overflow-hidden hover:shadow-lg transition duration-300 flex flex-col">
-      {/* Blog Image */}
-      <img
-        src={image}
-        alt={title}
-        className="w-full h-40 object-cover"
-      />
-
-      {/* Content Section */}
-      <div className="flex flex-col flex-1 p-4">
-        <h3 className="text-lg font-semibold mb-2 line-clamp-1">{title}</h3>
-        <p className="text-sm text-gray-600 line-clamp-2 flex-1">{description}</p>
-
-        {/* Button Bottom Left */}
-        <div className="mt-4">
-        <button class="rounded-full cursor-pointer text-red hover:before:bg-[#181717]border-[#181717] relative py-2 w-[60%] overflow-hidden border border-[#181717] bg-white px-3 text-[#181717] shadow-2xl transition-all before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-[#181717] before:transition-all before:duration-500 hover:text-white hover:shadow-[#181717] hover:before:left-0 hover:before:w-full"><span class="relative z-10">{buttonText}</span></button>
-
+    <Link href={`/blogs/${slug}`}>
+      <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition cursor-pointer h-full flex flex-col">
+        <img
+          src={image}
+          alt={title}
+          className="h-40 w-full object-cover"
+        />
+        <div className="p-4 flex flex-col flex-1">
+          <h3 className="font-bold text-lg mb-2 line-clamp-2">{title}</h3>
+          <p className="text-sm text-gray-600 line-clamp-3 flex-1">
+            {description}
+          </p>
+          <span className="mt-4 text-sm font-semibold text-blue-600">
+            Read More →
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
-};
-
-export default BlogCard;
+}

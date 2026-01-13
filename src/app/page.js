@@ -19,6 +19,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Link from "next/link";
+import { fetchBlogs } from "../api/blogApi";
+
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -26,14 +28,24 @@ export default function Home() {
   const { stores = [] } = useSelector((state) => state.stores);
   const { categories = [] } = useSelector((state) => state.categories); // ✅ get categories from store
   const [expanded, setExpanded] = useState(false);
-
+  const { blogs } = useSelector((state) => state.blogs || {
+    blogs: [],
+    status: "idle",
+  });
   useEffect(() => {
     dispatch(fetchDeals());
     dispatch(fetchStores());
     dispatch(fetchCategories()); 
+    dispatch(fetchBlogs());
+
 
   }, [dispatch]);
+  const publishedBlogs = blogs.filter(
+    (blog) => blog.status === "published" || !blog.status
+  );
 
+  // Take latest 5 blogs
+  const latestBlogs = publishedBlogs.slice(0, 5);
   const firstSectionDeals = deals.filter((d) => d.dealSection === "1st Section");
   const secondSectionDeals = deals.filter((d) => d.dealSection === "2nd Section");
   const thirdSectionDeals = deals.filter((d) => d.dealSection === "3rd Section");
@@ -46,51 +58,21 @@ export default function Home() {
   if (status === "loading") return <p className="text-center py-10">Loading deals...</p>;
   if (error) return <p className="text-center text-red-500 py-10">Error: {error}</p>;
 
-  const brands = [
-    {
-      image: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
-      cashback: 4,
-    },
-    {
-      image: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
-      cashback: 2,
-    },
-    {
-      image: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
-      cashback: 8,
-    },
-    {
-      image: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
-      cashback: 10,
-    },
-  ];
-
-  const blogs = [
-    {
-      image: "https://picsum.photos/400/200?random=1",
-      title: "How to Start Blogging",
-      description:
-        "Learn how to set up your blog and start writing content that attracts readers.",
-      buttonText: "Read More",
-    },
-    {
-      image: "https://picsum.photos/400/200?random=2",
-      title: "Top 10 SEO Tips",
-      description: "Boost your blog traffic with these proven SEO strategies.",
-      buttonText: "Read More",
-    },
-  ];
-
-  const retailerData = [
-    { name: "Temu", url: "https://www.temu.com" },
-    { name: "Amazon", url: "https://www.amazon.co.uk" },
-    { name: "Boots", url: "https://www.boots.com" },
-    { name: "Samsung", url: "https://www.samsung.com/uk/" },
-  ];
+ 
 
   if (status === "loading") return <p className="text-center py-10">Loading deals...</p>;
   if (error) return <p className="text-center text-red-500 py-10">Error: {error}</p>;
-
+  const getBlogImage = (blog) => {
+    if (blog.featuredImage) return blog.featuredImage;
+  
+    if (blog.content?.includes("<img")) {
+      const match = blog.content.match(/src="([^"]+)"/);
+      if (match?.[1]) return match[1];
+    }
+  
+    return "https://images.unsplash.com/photo-1499750310107-5fef28a66643";
+  };
+  
   return (
     <div>
       <ImageSlider />
@@ -139,13 +121,16 @@ export default function Home() {
       {/* ========== 🟦 Popular Stores ========== */}
       <div className="flex justify-between px-4">
         <h2 className="text-2xl font-bold">Popular Stores</h2>
+    
         <Link href="/stores">
   <p className="border-b border-[#000] cursor-pointer hover:text-blue-600 transition">
     View All
   </p>
+
 </Link>
       </div>
-    
+      <p className="text-justify px-4 mt-2">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+</p>
       <div className="py-10 px-4 relative overflow-visible">
   {popularStores.length > 0 ? (
     <>
@@ -362,13 +347,34 @@ export default function Home() {
 
       {/* ========== Blogs ========== */}
       <div className="py-10 px-4">
-        <h2 className="text-2xl font-bold mb-6">Latest Blogs</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {blogs.map((blog, index) => (
-            <BlogCard key={index} {...blog} />
-          ))}
-        </div>
+      {/* Header */}
+      <div className="flex justify-between items-center px-4 mb-6">
+        <h2 className="text-2xl font-bold">Latest Blogs</h2>
+
+        <Link
+          href="/blogs"
+          className="border-b border-black cursor-pointer hover:text-blue-600 transition"
+        >
+          View All
+        </Link>
       </div>
+
+      {/* Blogs Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        {latestBlogs.map((blog) => (
+          <BlogCard
+            key={blog._id}
+            image={getBlogImage(blog)}
+            title={blog.title}
+            description={
+              blog.excerpt ||
+              blog.content?.replace(/<[^>]*>/g, "").substring(0, 100) + "..."
+            }
+            slug={blog.slug || blog._id}
+          />
+        ))}
+      </div>
+    </div>
       <div className="max-w-5xl mx-auto px-4 py-12">
       <h2 className="text-3xl font-bold mb-6">
         How can discount codes help me?
