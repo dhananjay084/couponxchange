@@ -1,5 +1,6 @@
 'use client'
-import React, { useEffect, useMemo, useState } from 'react'
+
+import React, { useEffect, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/navigation'
 import { fetchStores } from '@/api/storeApi'
@@ -14,7 +15,8 @@ const Page = () => {
 
   const { stores = [], status, error } = useSelector((state) => state.stores)
 
-  const [activeLetter, setActiveLetter] = useState('A')
+  // Refs for scrolling
+  const sectionRefs = useRef({})
 
   useEffect(() => {
     dispatch(fetchStores())
@@ -34,7 +36,7 @@ const Page = () => {
       groups[key].push({
         id: store._id,
         name,
-        offers: store.totalOffers || 0 // adjust if API field differs
+        offers: store.totalOffers || 0,
       })
     })
 
@@ -45,7 +47,12 @@ const Page = () => {
     return groups
   }, [stores])
 
-  const activeStores = groupedStores[activeLetter] || []
+  const handleAlphabetClick = (letter) => {
+    sectionRefs.current[letter]?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+  }
 
   const handleStoreClick = (id) => {
     router.push(`/store/${id}`)
@@ -72,71 +79,75 @@ const Page = () => {
       </div>
 
       {/* Alphabet Selector */}
-      <div className="mt-8 flex flex-wrap justify-center gap-2">
+      <div className="sticky top-[96px] z-10 bg-white py-4 mt-8 flex flex-wrap justify-center gap-2 border-b">
+
         {alphabets.map(letter => (
           <button
             key={letter}
-            onClick={() => setActiveLetter(letter)}
-            className={`w-10 h-10 rounded-full font-bold transition
-              ${
-                activeLetter === letter
-                  ? 'bg-black text-white'
-                  : 'bg-gray-200 text-black hover:bg-gray-300'
-              }`}
+            onClick={() => handleAlphabetClick(letter)}
+            className="w-10 h-10 rounded-full font-bold transition
+              bg-gray-200 hover:bg-black hover:text-white"
           >
             {letter}
           </button>
         ))}
       </div>
 
-      {/* Content */}
-      <div className="mt-10 grid grid-cols-1 lg:grid-cols-[1fr_240px] gap-8 mb-12">
-        
-        {/* Store Cards */}
-        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
-          {activeStores.length > 0 ? (
-            activeStores.map(store => (
-              <div
-              key={store.id}
-              onClick={() => handleStoreClick(store.id)}
-              className="group cursor-pointer rounded-xl border border-gray-200 bg-white p-4
-                         shadow-sm transition-all duration-300
-                         hover:-translate-y-1 hover:shadow-lg hover:border-black
-                         flex items-center justify-between"
+      {/* All Alphabet Sections */}
+      <div className="mt-10 mb-12 space-y-14">
+        {alphabets.map(letter => {
+          const storesForLetter = groupedStores[letter] || []
+
+          return (
+            <div
+              key={letter}
+              ref={(el) => (sectionRefs.current[letter] = el)}
+              className="scroll-mt-[120px]"
+
             >
-            
-                <div>
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <LiaStoreSolid />
-                    {store.name}
-                  </h3>
-                  <span className="mt-1 inline-block rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700
-                 transition-colors duration-300 group-hover:bg-green-200">
-  {store.offers} Offers
-</span>
-
-                </div>
-
-                <HiChevronRight className="text-gray-400 text-xl transition-transform duration-300 group-hover:translate-x-1" />
-
+              {/* Section Header */}
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold">{letter}</h2>
+                <span className="text-sm text-gray-500">
+                  {storesForLetter.length} Stores
+                </span>
               </div>
-            ))
-          ) : (
-            <p className="italic text-gray-500">
-              No stores available for {activeLetter}
-            </p>
-          )}
-        </div>
 
-        {/* Right Side Info */}
-        <div className="hidden lg:flex flex-col items-end justify-start">
-          <span className="text-sm text-gray-500 uppercase tracking-wide">
-            Total Stores
-          </span>
-          <span className="text-3xl font-bold">
-            {activeStores.length}
-          </span>
-        </div>
+              {/* Store Cards */}
+              {storesForLetter.length > 0 ? (
+                <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {storesForLetter.map(store => (
+                    <div
+                      key={store.id}
+                      onClick={() => handleStoreClick(store.id)}
+                      className="group cursor-pointer rounded-xl border border-gray-200 bg-white p-4
+                        shadow-sm transition-all duration-300
+                        hover:-translate-y-1 hover:shadow-lg hover:border-black
+                        flex items-center justify-between"
+                    >
+                      <div>
+                        <h3 className="font-semibold flex items-center gap-2">
+                          <LiaStoreSolid />
+                          {store.name}
+                        </h3>
+                        <span className="mt-1 inline-block rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700
+                          group-hover:bg-green-200">
+                          {store.offers} Offers
+                        </span>
+                      </div>
+
+                      <HiChevronRight className="text-gray-400 text-xl group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="italic text-gray-500">
+                  No stores available for {letter}
+                </p>
+              )}
+            </div>
+          )
+        })}
       </div>
     </>
   )
