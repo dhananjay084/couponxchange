@@ -1,114 +1,142 @@
 'use client'
-import React, { useRef, useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/navigation'
 import { fetchStores } from '@/api/storeApi'
-import { LiaStoreSolid } from "react-icons/lia"
+import { LiaStoreSolid } from 'react-icons/lia'
+import { HiChevronRight } from 'react-icons/hi'
 
 const alphabets = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '0-9']
 
 const Page = () => {
   const dispatch = useDispatch()
   const router = useRouter()
+
   const { stores = [], status, error } = useSelector((state) => state.stores)
-  const refs = useRef({})
+
+  const [activeLetter, setActiveLetter] = useState('A')
 
   useEffect(() => {
     dispatch(fetchStores())
   }, [dispatch])
 
-  // Group stores alphabetically - now storing full store objects
+  // Group stores alphabetically
   const groupedStores = useMemo(() => {
-    const groups = Object.fromEntries(alphabets.map(letter => [letter, []]))
+    const groups = Object.fromEntries(alphabets.map(l => [l, []]))
+
     stores.forEach(store => {
-      const name = store.storeName?.trim() || ""
+      const name = store.storeName?.trim()
       if (!name || !store._id) return
+
       const firstChar = name[0].toUpperCase()
       const key = /^[A-Z]$/.test(firstChar) ? firstChar : '0-9'
+
       groups[key].push({
-        name: name,
         id: store._id,
-        storeData: store // Store full object for any future use
+        name,
+        offers: store.totalOffers || 0 // adjust if API field differs
       })
     })
-    
-    // Sort each group alphabetically by store name
+
     Object.keys(groups).forEach(key => {
       groups[key].sort((a, b) => a.name.localeCompare(b.name))
     })
-    
+
     return groups
   }, [stores])
 
-  const scrollTo = (key) => {
-    const section = refs.current[key]
-    if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const activeStores = groupedStores[activeLetter] || []
+
+  const handleStoreClick = (id) => {
+    router.push(`/store/${id}`)
   }
 
-  const handleStoreClick = (storeId) => {
-    if (storeId) {
-      router.push(`/store/${storeId}`)
-    }
+  if (status === 'loading') {
+    return <p className="text-center py-10">Loading stores...</p>
   }
 
-  if (status === "loading") return <p className="text-center py-10">Loading stores...</p>
-  if (error) return <p className="text-center text-red-500 py-10">Error: {error}</p>
+  if (error) {
+    return <p className="text-center text-red-500 py-10">{error}</p>
+  }
 
   return (
     <>
-      <div className='rounded-md p-8 mt-12 py-8 border border-gray-300 bg-white px-3 text-black shadow-md'>
-        <h1 className='text-[24px] font-bold'>All Stores – Grab the Latest Coupons & Promo Codes</h1>
-        <p className='text-[18px]'>Explore all our retailers and find verified codes in seconds.</p>
+      {/* Header */}
+      <div className="mt-12 rounded-md border bg-white p-6 shadow-md">
+        <h1 className="text-2xl font-bold">
+          All Stores – Grab the Latest Coupons & Promo Codes
+        </h1>
+        <p className="text-gray-600 mt-1">
+          Explore all our retailers and find verified codes in seconds.
+        </p>
       </div>
 
       {/* Alphabet Selector */}
-      <div className='flex flex-wrap justify-center mt-8 gap-2'>
+      <div className="mt-8 flex flex-wrap justify-center gap-2">
         {alphabets.map(letter => (
           <button
             key={letter}
-            onClick={() => scrollTo(letter)}
-            className='cursor-pointer w-10 h-10 flex items-center justify-center rounded-full bg-[#181717] text-white font-bold hover:bg-gray-800 transition'
+            onClick={() => setActiveLetter(letter)}
+            className={`w-10 h-10 rounded-full font-bold transition
+              ${
+                activeLetter === letter
+                  ? 'bg-black text-white'
+                  : 'bg-gray-200 text-black hover:bg-gray-300'
+              }`}
           >
             {letter}
           </button>
         ))}
       </div>
 
-      {/* Store Sections */}
-      <div className='mt-10'>
-        {alphabets.map(letter => (
-          <div
-            key={letter}
-            ref={(el) => (refs.current[letter] = el)}
-            className='mb-8 scroll-mt-28'
-          >
-            <h2 className='text-2xl font-bold border-b pb-2 mb-4'>{letter}</h2>
-            <ul className='flex flex-wrap gap-3'>
-              {groupedStores[letter]?.length > 0 ? (
-                groupedStores[letter].map((store, idx) => (
-                  <li
-                    key={store.id || idx}
-                    onClick={() => handleStoreClick(store.id)}
-                    className="rounded-md cursor-pointer relative py-2 overflow-hidden border border-[#181717] bg-white px-3 text-[#181717] shadow-md transition-all before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-[#181717] before:transition-all before:duration-500 hover:text-white hover:shadow-[#181717] hover:before:left-0 hover:before:w-full"
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        handleStoreClick(store.id)
-                      }
-                    }}
-                  >
-                    <span className="relative z-10 flex items-center gap-2">
-                      <LiaStoreSolid /> {store.name}
-                    </span>
-                  </li>
-                ))
-              ) : (
-                <li className='text-[#181717] italic'>No stores available</li>
-              )}
-            </ul>
-          </div>
-        ))}
+      {/* Content */}
+      <div className="mt-10 grid grid-cols-1 lg:grid-cols-[1fr_240px] gap-8 mb-12">
+        
+        {/* Store Cards */}
+        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          {activeStores.length > 0 ? (
+            activeStores.map(store => (
+              <div
+              key={store.id}
+              onClick={() => handleStoreClick(store.id)}
+              className="group cursor-pointer rounded-xl border border-gray-200 bg-white p-4
+                         shadow-sm transition-all duration-300
+                         hover:-translate-y-1 hover:shadow-lg hover:border-black
+                         flex items-center justify-between"
+            >
+            
+                <div>
+                  <h3 className="font-semibold flex items-center gap-2">
+                    <LiaStoreSolid />
+                    {store.name}
+                  </h3>
+                  <span className="mt-1 inline-block rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700
+                 transition-colors duration-300 group-hover:bg-green-200">
+  {store.offers} Offers
+</span>
+
+                </div>
+
+                <HiChevronRight className="text-gray-400 text-xl transition-transform duration-300 group-hover:translate-x-1" />
+
+              </div>
+            ))
+          ) : (
+            <p className="italic text-gray-500">
+              No stores available for {activeLetter}
+            </p>
+          )}
+        </div>
+
+        {/* Right Side Info */}
+        <div className="hidden lg:flex flex-col items-end justify-start">
+          <span className="text-sm text-gray-500 uppercase tracking-wide">
+            Total Stores
+          </span>
+          <span className="text-3xl font-bold">
+            {activeStores.length}
+          </span>
+        </div>
       </div>
     </>
   )
