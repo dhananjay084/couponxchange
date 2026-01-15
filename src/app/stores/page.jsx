@@ -69,7 +69,7 @@ const Page = () => {
   return (
     <>
       {/* Header */}
-      <div className="mt-12 rounded-md border bg-white p-6 shadow-md">
+      <div className="mt-12 rounded-md  bg-white p-6 shadow-md">
         <h1 className="text-2xl font-bold">
           All Stores – Grab the Latest Coupons & Promo Codes
         </h1>
@@ -79,8 +79,7 @@ const Page = () => {
       </div>
 
       {/* Alphabet Selector */}
-      <div className="sticky top-[96px] z-10 bg-white py-4 mt-8 flex flex-wrap justify-center gap-2 border-b">
-
+      <div className="mt-8 flex flex-wrap justify-center gap-2 py-4 ">
         {alphabets.map(letter => (
           <button
             key={letter}
@@ -103,7 +102,6 @@ const Page = () => {
               key={letter}
               ref={(el) => (sectionRefs.current[letter] = el)}
               className="scroll-mt-[120px]"
-
             >
               {/* Section Header */}
               <div className="flex items-center justify-between mb-6">
@@ -115,7 +113,7 @@ const Page = () => {
 
               {/* Store Cards */}
               {storesForLetter.length > 0 ? (
-                <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
                   {storesForLetter.map(store => (
                     <div
                       key={store.id}
@@ -127,7 +125,6 @@ const Page = () => {
                     >
                       <div>
                         <h3 className="font-semibold flex items-center gap-2">
-                          <LiaStoreSolid />
                           {store.name}
                         </h3>
                         <span className="mt-1 inline-block rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700
