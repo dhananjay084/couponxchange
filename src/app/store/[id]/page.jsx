@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchStoreById } from "@/api/storeApi";
 import { getDeals } from "@/api/dealApi";
 import { fetchStores } from "@/api/storeApi";
+import { MdOutlineVerified } from "react-icons/md";
+import { HiPercentBadge } from "react-icons/hi2";
+import { IoMdPricetag } from "react-icons/io";
 
 // --- Inline Icon Components ---
 const StarIcon = ({ size = 22, className = "" }) => (
@@ -159,30 +162,23 @@ const CouponCard = ({ coupon, onClickTerms }) => {
   const buttonStyle = "bg-orange-500 text-white px-6 py-3 rounded-full font-medium transition-all duration-150 ease-in-out min-w-[150px] whitespace-nowrap " + 
                       "hover:bg-orange-600 hover:scale-[1.03] hover:shadow-lg active:scale-95";
 
-  const typeColor = "text-orange-500"; 
-  const typeEmoji = (coupon.type === "Reward" ? "⭐" : (coupon.type === "Code" ? "🏷️" : "💡"));
+  const typeColor = "orange-500"; 
+  const typeEmoji = (coupon.type === "Reward" ? <HiPercentBadge/> : (coupon.type === "Code" ? <IoMdPricetag/> : <HiPercentBadge/>));
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col lg:flex-row justify-between items-start p-5 mb-5 relative">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col lg:flex-row justify-between items-center p-5 mb-5 relative">
       {/* Tag badge on right side */}
-      <div className="absolute -top-2 right-4">
-        <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
-          coupon.tag === "Expires Soon" 
-            ? "bg-red-100 text-red-800 border border-red-200" 
-            : coupon.tag === "Coupons"
-            ? "bg-blue-100 text-blue-800 border border-blue-200"
-            : coupon.tag === "Deals"
-            ? "bg-green-100 text-green-800 border border-green-200"
-            : "bg-gray-100 text-gray-800 border border-gray-200"
-        }`}>
-          {coupon.tag}
+      <div className="absolute -top-5 right-4">
+        <span className={`flex items-center bg-green-300 gap-2 px-3 py-1 text-xs font-semibold rounded-full mt-2`}>
+          <MdOutlineVerified size={18} />
+          Verified
         </span>
       </div>
 
       {/* Coupon Content */}
       <div className="flex-1 w-full lg:w-auto pr-4">
         <div className="flex items-center gap-2 mb-2">
-          <span className={`text-xs font-semibold ${typeColor} flex items-center`}>
+          <span className={`text-xs font-semibold bg-${typeColor} text-white p-2 rounded-md flex items-center`}>
             <span className="mr-1 text-base">{typeEmoji}</span> {coupon.type}
           </span>
           <span className="text-xs text-gray-500">
@@ -210,8 +206,8 @@ const CouponCard = ({ coupon, onClickTerms }) => {
         </div>
       </div>
 
-      {/* CTA Button Section */}
-      <div className="w-full lg:w-auto mt-4 lg:mt-0 flex justify-end">
+      {/* CTA Button Section - Vertically Centered */}
+      <div className="w-full lg:w-auto mt-4 lg:mt-0 flex justify-center lg:justify-end lg:items-center">
         <button 
           className={buttonStyle}
           onClick={() => onClickTerms(coupon)}
