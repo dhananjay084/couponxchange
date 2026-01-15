@@ -120,7 +120,7 @@ const Page = () => {
                       onClick={() => handleStoreClick(store.id)}
                       className="group cursor-pointer rounded-xl border border-gray-200 bg-white p-4
                         shadow-sm transition-all duration-300
-                        hover:-translate-y-1 hover:shadow-lg hover:border-black
+                        hover:-translate-y-1 hover:shadow-lg 
                         flex items-center justify-between"
                     >
                       <div>
