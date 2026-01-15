@@ -185,7 +185,8 @@ const CouponCard = ({ coupon, onClickTerms }) => {
       </div>
 
       {/* NEW LEFT SECTION — 10% OFF */}
-      <div className="flex-shrink-0 flex flex-col gap-2 items-center justify-center mr-6">
+      <div className="flex-shrink-0 w-24 flex flex-col gap-1 items-center justify-center mr-6">
+
         <span className="text-3xl font-extrabold text-orange-500 leading-none">
           10%
         </span>
@@ -280,9 +281,10 @@ const DealModal = ({ deal, isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden relative animate-fadeIn transform transition-all duration-300 flex flex-col lg:flex-row">
-        
+      <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-[9999] p-4 overflow-y-auto">
+
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl my-10 max-h-[90vh] overflow-y-auto relative animate-fadeIn transition-all duration-300 flex flex-col lg:flex-row">
+
         {/* Close Button */}
         <button
           onClick={onClose}
