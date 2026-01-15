@@ -196,8 +196,8 @@ const CouponCard = ({ coupon, onClickTerms }) => {
 </div>
 
 {/* Mobile top-left tag */}
-<div className="absolute top-3 left-3 lg:hidden">
-  <span className="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+<div className="absolute top-1 left-3 lg:hidden">
+  <span className="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-md">
     10% OFF
   </span>
 </div>
@@ -205,7 +205,7 @@ const CouponCard = ({ coupon, onClickTerms }) => {
 
       {/* Coupon Content (UNCHANGED) */}
       <div className="flex-1 w-full lg:w-auto pr-4">
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-2 mt-[30px] lg:mt-0">
           <span className={`text-xs font-semibold bg-${typeColor} text-white p-2 rounded-md flex items-center`}>
             <span className="mr-1 text-base">{typeEmoji}</span> {coupon.type}
           </span>
