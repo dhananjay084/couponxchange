@@ -109,7 +109,7 @@ const TabButton = ({ text, isActive, onClick, icon = null }) => (
       isActive
         ? "bg-orange-500 text-white"
         : "border border-orange-500 text-orange-500 hover:bg-orange-50"
-    } px-4 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-all duration-150 ease-in-out
+    } px-4 py-1.5 text-sm font-medium rounded-md whitespace-nowrap transition-all duration-150 ease-in-out
     hover:scale-[1.03] hover:shadow-md active:scale-95 flex items-center gap-2`} 
   >
     {/* {icon && icon} */}
