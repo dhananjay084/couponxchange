@@ -171,7 +171,7 @@ const CouponCard = ({ coupon, onClickTerms }) => {
       <IoMdPricetag />
     ) : (
       <HiPercentBadge />
-    );
+    );const [showTerms, setShowTerms] = useState(false);
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col lg:flex-row justify-between items-center p-5 mb-5 relative">
@@ -185,15 +185,23 @@ const CouponCard = ({ coupon, onClickTerms }) => {
       </div>
 
       {/* NEW LEFT SECTION — 10% OFF */}
-      <div className="flex-shrink-0 w-24 flex flex-col gap-1 items-center justify-center mr-6">
+  {/* Desktop left discount */}
+<div className="hidden lg:flex flex-shrink-0 w-24 flex-col gap-1 items-center justify-center mr-6">
+  <span className="text-3xl font-extrabold text-orange-500 leading-none">
+    10%
+  </span>
+  <span className="text-3xl font-semibold text-gray-600 leading-none">
+    OFF
+  </span>
+</div>
 
-        <span className="text-3xl font-extrabold text-orange-500 leading-none">
-          10%
-        </span>
-        <span className="text-3xl font-semibold text-gray-600 leading-none">
-          OFF
-        </span>
-      </div>
+{/* Mobile top-left tag */}
+<div className="absolute top-3 left-3 lg:hidden">
+  <span className="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+    10% OFF
+  </span>
+</div>
+
 
       {/* Coupon Content (UNCHANGED) */}
       <div className="flex-1 w-full lg:w-auto pr-4">
@@ -215,12 +223,13 @@ const CouponCard = ({ coupon, onClickTerms }) => {
 
         {/* Terms and Expiry */}
         <div className="flex items-center gap-4 mt-3">
-          <button
-            onClick={() => onClickTerms(coupon)}
-            className="text-gray-500 text-sm font-medium hover:underline"
-          >
-            Terms
-          </button>
+        <button
+  onClick={() => setShowTerms(prev => !prev)}
+  className="text-gray-500 text-sm font-medium hover:underline"
+>
+  Terms
+</button>
+
           {coupon.expiry && (
             <p className="text-gray-400 text-sm">
               Expiration Date:{" "}
@@ -228,11 +237,30 @@ const CouponCard = ({ coupon, onClickTerms }) => {
             </p>
           )}
         </div>
+        <div
+  className={`transition-all duration-300 overflow-hidden ${
+    showTerms ? "max-h-40 mt-3" : "max-h-0"
+  }`}
+>
+  <p className="text-sm text-gray-600">
+    {coupon.desc}
+  </p>
+</div>
+
       </div>
 
       {/* CTA Button Section (UNCHANGED) */}
       <div className="w-full lg:w-auto mt-4 lg:mt-0 flex justify-center lg:justify-end lg:items-center">
-        <button className={buttonStyle} onClick={() => onClickTerms(coupon)}>
+        <button
+  className={buttonStyle}
+  onClick={() => {
+    onClickTerms(coupon);
+    if (coupon.originalDeal?.redirectLink) {
+      window.open(coupon.originalDeal.redirectLink, "_blank");
+    }
+  }}
+>
+
           {coupon.btnText}
         </button>
       </div>
@@ -283,7 +311,7 @@ const DealModal = ({ deal, isOpen, onClose }) => {
   return (
       <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-[9999] p-4 overflow-y-auto">
 
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl my-10 max-h-[90vh] overflow-y-auto relative animate-fadeIn transition-all duration-300 flex flex-col lg:flex-row">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl my-10 max-h-[90vh] overflow-y-auto relative animate-fadeIn transition-all duration-300 flex flex-col">
 
         {/* Close Button */}
         <button
@@ -293,23 +321,11 @@ const DealModal = ({ deal, isOpen, onClose }) => {
           <CloseIcon size={22} />
         </button>
 
-        {/* Left Side - Image */}
-        <div className="lg:w-1/2 w-full h-48 lg:h-auto overflow-hidden">
-          {originalDeal?.dealImage ? (
-            <img 
-              src={originalDeal.dealImage} 
-              alt={originalDeal.dealTitle}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-orange-100 to-pink-100 flex items-center justify-center">
-              <span className="text-2xl text-gray-400">No Image</span>
-            </div>
-          )}
-        </div>
+       
 
         {/* Right Side - Content */}
-        <div className="lg:w-1/2 w-full p-6 overflow-y-auto max-h-[calc(90vh-2rem)]">
+        <div className="w-full p-6 overflow-y-auto max-h-[calc(90vh-2rem)]">
+
           {/* Logo and Title */}
           <div className="flex items-center gap-4 mb-6">
             {originalDeal?.dealLogo && (
