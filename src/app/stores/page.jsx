@@ -106,8 +106,8 @@ const Page = () => {
               {/* Section Header */}
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold">{letter}</h2>
-                <span className="text-sm text-gray-500">
-                  {storesForLetter.length} Stores
+                <span className="text-sm text-gray-500 font-bold">
+                  {storesForLetter.length} STORES
                 </span>
               </div>
 

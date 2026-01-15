@@ -9,7 +9,7 @@ import { fetchStores } from "@/api/storeApi";
 // --- Inline Icon Components ---
 const StarIcon = ({ size = 22, className = "" }) => (
     <svg 
-        xmlns="http://www.w3.org2000/svg" 
+        xmlns="http://www.w3.org/2000/svg" 
         viewBox="0 0 24 24" 
         fill="currentColor" 
         width={size} 
@@ -72,6 +72,24 @@ const CheckIcon = ({ size = 18, className = "" }) => (
         <polyline points="20 6 9 17 4 12"></polyline>
     </svg>
 );
+
+const ClockIcon = ({ size = 18, className = "" }) => (
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        width={size} 
+        height={size} 
+        className={className}
+    >
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+    </svg>
+);
 // --- End Inline Icon Components ---
 
 // Navigation links for the new left sidebar
@@ -84,7 +102,7 @@ const navLinks = [
   "Save with Very's end of summer deals",
 ];
 
-const TabButton = ({ text, isActive, onClick }) => (
+const TabButton = ({ text, isActive, onClick, icon = null }) => (
   <button
     onClick={onClick}
     className={`${
@@ -92,15 +110,36 @@ const TabButton = ({ text, isActive, onClick }) => (
         ? "bg-orange-500 text-white"
         : "border border-orange-500 text-orange-500 hover:bg-orange-50"
     } px-4 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-all duration-150 ease-in-out
-    hover:scale-[1.03] hover:shadow-md active:scale-95`} 
+    hover:scale-[1.03] hover:shadow-md active:scale-95 flex items-center gap-2`} 
   >
+    {/* {icon && icon} */}
     {text}
   </button>
 );
 
-// Convert deal object to coupon format for display
+// Convert deal object to coupon format for display with tag assignment
 const convertDealToCoupon = (deal) => {
   const hasCode = deal.dealCode && deal.dealCode.trim() !== "";
+  
+  // Determine which tag to assign based on conditions
+  let assignedTag = "Deals"; // Default
+  
+  // Check if expires soon (within 24 hours)
+  if (deal.expirationDate) {
+    const expirationDate = new Date(deal.expirationDate);
+    const currentDate = new Date();
+    const timeDiff = expirationDate.getTime() - currentDate.getTime();
+    const hoursDiff = timeDiff / (1000 * 3600);
+    
+    if (hoursDiff <= 24 && hoursDiff > 0) {
+      assignedTag = "Expires Soon";
+    }
+  }
+  
+  // If has code and not already assigned to Expires Soon
+  if (hasCode && assignedTag !== "Expires Soon") {
+    assignedTag = "Coupons";
+  }
   
   return {
     type: hasCode ? "Code" : "Deal",
@@ -110,11 +149,12 @@ const convertDealToCoupon = (deal) => {
     expiry: deal.expirationDate ? new Date(deal.expirationDate).toLocaleDateString('en-GB') : "No expiry",
     terms: deal.dealDescription || "No terms available",
     category: deal.dealCategory || "DEALS",
-    tag: deal.dealTag || "ALL",
+    tag: assignedTag, // Assign the calculated tag
     originalDeal: deal // Keep original deal data
   };
 };
 
+// Modified CouponCard to show tag on right side
 const CouponCard = ({ coupon, onClickTerms }) => {
   const buttonStyle = "bg-orange-500 text-white px-6 py-3 rounded-full font-medium transition-all duration-150 ease-in-out min-w-[150px] whitespace-nowrap " + 
                       "hover:bg-orange-600 hover:scale-[1.03] hover:shadow-lg active:scale-95";
@@ -123,9 +163,24 @@ const CouponCard = ({ coupon, onClickTerms }) => {
   const typeEmoji = (coupon.type === "Reward" ? "⭐" : (coupon.type === "Code" ? "🏷️" : "💡"));
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col lg:flex-row justify-between items-start p-5 mb-5">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col lg:flex-row justify-between items-start p-5 mb-5 relative">
+      {/* Tag badge on right side */}
+      <div className="absolute -top-2 right-4">
+        <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
+          coupon.tag === "Expires Soon" 
+            ? "bg-red-100 text-red-800 border border-red-200" 
+            : coupon.tag === "Coupons"
+            ? "bg-blue-100 text-blue-800 border border-blue-200"
+            : coupon.tag === "Deals"
+            ? "bg-green-100 text-green-800 border border-green-200"
+            : "bg-gray-100 text-gray-800 border border-gray-200"
+        }`}>
+          {coupon.tag}
+        </span>
+      </div>
+
       {/* Coupon Content */}
-      <div className="flex-1 w-full lg:w-auto">
+      <div className="flex-1 w-full lg:w-auto pr-4">
         <div className="flex items-center gap-2 mb-2">
           <span className={`text-xs font-semibold ${typeColor} flex items-center`}>
             <span className="mr-1 text-base">{typeEmoji}</span> {coupon.type}
@@ -156,7 +211,7 @@ const CouponCard = ({ coupon, onClickTerms }) => {
       </div>
 
       {/* CTA Button Section */}
-      <div className="w-full lg:w-auto mt-4 lg:mt-0 lg:ml-5 flex justify-end">
+      <div className="w-full lg:w-auto mt-4 lg:mt-0 flex justify-end">
         <button 
           className={buttonStyle}
           onClick={() => onClickTerms(coupon)}
@@ -185,8 +240,6 @@ const StoreInfoDisplay = ({ storeData, status }) => {
   if (status === "failed" || !storeData) {
     return null;
   }
-
- 
 };
 
 // Modal Component - Horizontal Layout
@@ -251,11 +304,18 @@ const DealModal = ({ deal, isOpen, onClose }) => {
             )}
             <div>
               <h2 className="text-2xl font-bold text-gray-900">{originalDeal?.dealTitle}</h2>
-              {originalDeal?.dealCategory && (
-                <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mt-2">
-                  {originalDeal.dealCategory}
-                </span>
-              )}
+              {/* Show tag in modal too */}
+              <span className={`inline-block px-3 py-1 text-xs font-semibold rounded-full mt-2 ${
+                deal.tag === "Expires Soon" 
+                  ? "bg-red-100 text-red-800" 
+                  : deal.tag === "Coupons"
+                  ? "bg-blue-100 text-blue-800"
+                  : deal.tag === "Deals"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-gray-100 text-gray-800"
+              }`}>
+                {deal.tag}
+              </span>
             </div>
           </div>
 
@@ -339,7 +399,7 @@ const DealModal = ({ deal, isOpen, onClose }) => {
             
             {originalDeal?.dealTag && (
               <div>
-                <h4 className="text-sm font-semibold text-gray-500 mb-1">Tag</h4>
+                <h4 className="text-sm font-semibold text-gray-500 mb-1">Original Tag</h4>
                 <p className="text-gray-800 font-medium">{originalDeal.dealTag}</p>
               </div>
             )}
@@ -373,15 +433,22 @@ export default function CouponsPage() {
   const { currentStore, currentStoreStatus, stores: allStores } = useSelector((state) => state.stores);
   
   const [selectedCoupon, setSelectedCoupon] = useState(null);
-  const [activeTab, setActiveTab] = useState("ALL");
+  const [activeTab, setActiveTab] = useState("All Offers");
   const [activeShopTab, setActiveShopTab] = useState("A");
   const [activeCategoryTab, setActiveCategoryTab] = useState("ALL");
   const [deals, setDeals] = useState([]);
   const [filteredDeals, setFilteredDeals] = useState([]);
   const [loadingDeals, setLoadingDeals] = useState(false);
-  const [uniqueTags, setUniqueTags] = useState([]);
   const [uniqueCategories, setUniqueCategories] = useState([]);
   const [storesByLetter, setStoresByLetter] = useState({});
+
+  // Define the four specific tabs
+  const TABS = [
+    { id: "All Offers", label: "ALL OFFERS", icon: null },
+    { id: "Coupons", label: "COUPONS", icon: "🏷️" },
+    { id: "Deals", label: "DEALS", icon: "💡" },
+    { id: "Expires Soon", label: "EXPIRES SOON", icon: <ClockIcon size={16} /> }
+  ];
 
   // Generate all alphabet letters
   const allAlphabets = useMemo(() => {
@@ -416,15 +483,8 @@ export default function CouponsPage() {
       try {
         console.log("🔄 Fetching all deals...");
         const allDeals = await getDeals();
-        console.log("✅ All deals fetched:", allDeals);
+        console.log("✅ All deals fetched:", allDeals.length);
         setDeals(allDeals);
-        
-        // Extract unique tags for tabs
-        const tags = ["ALL", ...new Set(allDeals
-          .map(deal => deal.dealTag)
-          .filter(tag => tag && tag.trim() !== "")
-        )];
-        setUniqueTags(tags);
         
         // Extract unique categories for brand section
         const categories = ["ALL", ...new Set(allDeals
@@ -436,7 +496,6 @@ export default function CouponsPage() {
       } catch (error) {
         console.error("❌ Failed to fetch deals:", error);
         setDeals([]);
-        setUniqueTags(["ALL"]);
         setUniqueCategories(["ALL"]);
       } finally {
         setLoadingDeals(false);
@@ -494,32 +553,35 @@ export default function CouponsPage() {
     }
   }, [allStores, allAlphabets]);
 
-  // Filter deals when store data is loaded
+  // Filter deals when store data is loaded and apply tag filtering
   useEffect(() => {
     if (currentStore && currentStore.storeName && deals.length > 0) {
       console.log("🔍 Filtering deals for store:", currentStore.storeName);
       
-      // Filter deals where dealStore matches current store name
+      // First, filter deals where dealStore matches current store name
       let matchingDeals = deals.filter(deal => 
         deal.dealStore && 
         currentStore.storeName && 
         deal.dealStore.toLowerCase() === currentStore.storeName.toLowerCase()
       );
       
-      // Apply tag filter if not "ALL"
-      if (activeTab !== "ALL") {
-        matchingDeals = matchingDeals.filter(deal => deal.dealTag === activeTab);
+      // Convert to coupon format with assigned tags
+      let couponDeals = matchingDeals.map(deal => convertDealToCoupon(deal));
+      
+      // Apply active tab filter
+      if (activeTab !== "All Offers") {
+        couponDeals = couponDeals.filter(coupon => coupon.tag === activeTab);
       }
       
       // Apply category filter if not "ALL"
       if (activeCategoryTab !== "ALL") {
-        matchingDeals = matchingDeals.filter(deal => deal.dealCategory === activeCategoryTab);
+        couponDeals = couponDeals.filter(coupon => 
+          coupon.originalDeal?.dealCategory === activeCategoryTab
+        );
       }
       
-      console.log("✅ Matching deals found:", matchingDeals.length);
+      console.log(`✅ ${couponDeals.length} matching deals found for tab "${activeTab}"`);
       
-      // Convert matching deals to coupon format
-      const couponDeals = matchingDeals.map(deal => convertDealToCoupon(deal));
       setFilteredDeals(couponDeals);
       
       if (matchingDeals.length === 0) {
@@ -539,16 +601,6 @@ export default function CouponsPage() {
   const handleStoreClick = (storeId) => {
     router.push(`/store/${storeId}`);
   };
-
-  // Get all coupon tags from filtered deals
-  const allCoupons = useMemo(() => {
-    return [...filteredDeals];
-  }, [filteredDeals]);
-
-  // Filter coupons based on active tab (already filtered in useEffect)
-  const displayCoupons = useMemo(() => {
-    return allCoupons;
-  }, [allCoupons]);
 
   return (
     <div className="bg-[#f7f7f7] min-h-screen w-full font-sans">
@@ -604,17 +656,7 @@ export default function CouponsPage() {
           </div>
         )}
 
-        {/* Tabs based on deal tags */}
-        <div className="flex overflow-x-auto pb-4 gap-3">
-          {uniqueTags.map((tag, i) => (
-            <TabButton 
-              key={i} 
-              text={tag === "ALL" ? "ALL OFFERS" : tag.toUpperCase()} 
-              isActive={activeTab === tag}
-              onClick={() => setActiveTab(tag)}
-            />
-          ))}
-        </div>
+      
 
         {/* Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-4">
@@ -633,7 +675,7 @@ export default function CouponsPage() {
                 ))}
               </ul>
 
-              {/* Verified offers from similar brands - Now using deal categories */}
+              {/* Verified offers from similar brands */}
               <div className="mt-8 border-t pt-4">
                 <h3 className="text-lg font-semibold mb-3">Verified offers from similar brands:</h3>
                 <div className="flex flex-wrap gap-2 mb-3">
@@ -718,33 +760,49 @@ export default function CouponsPage() {
 
           {/* Right Coupon Cards Section */}
           <div className="lg:col-span-9">
-            {!loadingDeals && displayCoupons.length > 0 ? (
-                displayCoupons.map((c, i) => (
-                    <CouponCard 
-                        key={i} 
-                        coupon={c} 
-                        onClickTerms={setSelectedCoupon} 
-                    />
-                ))
-            ) : !loadingDeals && displayCoupons.length === 0 ? (
-                <div className="bg-white p-8 rounded-lg text-center">
-                    <div className="text-4xl mb-4">😔</div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2">No deals found</h3>
-                    <p className="text-gray-600">
-                        No deals available for {currentStore?.storeName || "this store"} yet.
-                        {activeTab !== "ALL" && ` with tag "${activeTab}"`}
-                        {activeCategoryTab !== "ALL" && ` in category "${activeCategoryTab}"`}
-                    </p>
-                    <p className="text-gray-500 text-sm mt-2">
-                        Check back later or explore other stores.
-                    </p>
+          <div className="flex overflow-x-auto pb-4 gap-3">
+          {TABS.map((tab) => (
+            <TabButton 
+              key={tab.id} 
+              text={tab.label} 
+              icon={tab.icon}
+              isActive={activeTab === tab.id}
+              onClick={() => setActiveTab(tab.id)}
+            />
+          ))}
+        </div>
+            {!loadingDeals && filteredDeals.length > 0 ? (
+              filteredDeals.map((coupon, i) => (
+                <CouponCard 
+                  key={i} 
+                  coupon={coupon} 
+                  onClickTerms={setSelectedCoupon} 
+                />
+              ))
+            ) : !loadingDeals && filteredDeals.length === 0 ? (
+              <div className="bg-white p-8 rounded-lg text-center">
+                <div className="text-4xl mb-4">😔</div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">No deals found</h3>
+                <p className="text-gray-600">
+                  No deals available for {currentStore?.storeName || "this store"} yet.
+                  {activeTab !== "All Offers" && ` in "${activeTab}"`}
+                  {activeCategoryTab !== "ALL" && ` with category "${activeCategoryTab}"`}
+                </p>
+                <div className="mt-4">
+                  <button 
+                    onClick={() => setActiveTab("All Offers")}
+                    className="text-orange-500 hover:underline"
+                  >
+                    View all offers
+                  </button>
                 </div>
+              </div>
             ) : null}
           </div>
         </div>
       </div>
 
-      {/* Deal Modal - Now horizontal layout and centered */}
+      {/* Deal Modal */}
       <DealModal 
         deal={selectedCoupon}
         isOpen={!!selectedCoupon}
