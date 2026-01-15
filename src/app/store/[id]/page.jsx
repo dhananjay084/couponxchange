@@ -159,23 +159,42 @@ const convertDealToCoupon = (deal) => {
 
 // Modified CouponCard to show tag on right side
 const CouponCard = ({ coupon, onClickTerms }) => {
-  const buttonStyle = "bg-orange-500 text-white px-6 py-3 rounded-full font-medium transition-all duration-150 ease-in-out min-w-[150px] whitespace-nowrap " + 
-                      "hover:bg-orange-600 hover:scale-[1.03] hover:shadow-lg active:scale-95";
+  const buttonStyle =
+    "bg-orange-500 text-white px-6 py-3 rounded-full font-medium transition-all duration-150 ease-in-out min-w-[150px] whitespace-nowrap " +
+    "hover:bg-orange-600 hover:scale-[1.03] hover:shadow-lg active:scale-95";
 
-  const typeColor = "orange-500"; 
-  const typeEmoji = (coupon.type === "Reward" ? <HiPercentBadge/> : (coupon.type === "Code" ? <IoMdPricetag/> : <HiPercentBadge/>));
+  const typeColor = "orange-500";
+  const typeEmoji =
+    coupon.type === "Reward" ? (
+      <HiPercentBadge />
+    ) : coupon.type === "Code" ? (
+      <IoMdPricetag />
+    ) : (
+      <HiPercentBadge />
+    );
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col lg:flex-row justify-between items-center p-5 mb-5 relative">
+      
       {/* Tag badge on right side */}
-      <div className="absolute -top-5 right-4">
-        <span className={`flex items-center bg-green-300 gap-2 px-3 py-1 text-xs font-semibold rounded-full mt-2`}>
+      <div className="absolute top-0 right-4">
+        <span className="flex items-center bg-green-300 gap-2 px-3 py-1 text-xs font-semibold rounded-full mt-2">
           <MdOutlineVerified size={18} />
           Verified
         </span>
       </div>
 
-      {/* Coupon Content */}
+      {/* NEW LEFT SECTION — 10% OFF */}
+      <div className="flex-shrink-0 flex flex-col gap-2 items-center justify-center mr-6">
+        <span className="text-3xl font-extrabold text-orange-500 leading-none">
+          10%
+        </span>
+        <span className="text-3xl font-semibold text-gray-600 leading-none">
+          OFF
+        </span>
+      </div>
+
+      {/* Coupon Content (UNCHANGED) */}
       <div className="flex-1 w-full lg:w-auto pr-4">
         <div className="flex items-center gap-2 mb-2">
           <span className={`text-xs font-semibold bg-${typeColor} text-white p-2 rounded-md flex items-center`}>
@@ -186,11 +205,14 @@ const CouponCard = ({ coupon, onClickTerms }) => {
             {coupon.type === "Code" && "Expires soon!"}
           </span>
         </div>
-        
-        <h3 className="text-4xl font-extrabold text-gray-900 mb-1 leading-none">{coupon.title}</h3>
+
+        <h3 className="text-4xl font-extrabold text-gray-900 mb-1 leading-none">
+          {coupon.title}
+        </h3>
+
         <p className="text-gray-600 mt-2">{coupon.desc}</p>
 
-        {/* Terms and Expiry below the description */}
+        {/* Terms and Expiry */}
         <div className="flex items-center gap-4 mt-3">
           <button
             onClick={() => onClickTerms(coupon)}
@@ -200,24 +222,23 @@ const CouponCard = ({ coupon, onClickTerms }) => {
           </button>
           {coupon.expiry && (
             <p className="text-gray-400 text-sm">
-              Expiration Date: <span className="font-medium">{coupon.expiry}</span>
+              Expiration Date:{" "}
+              <span className="font-medium">{coupon.expiry}</span>
             </p>
           )}
         </div>
       </div>
 
-      {/* CTA Button Section - Vertically Centered */}
+      {/* CTA Button Section (UNCHANGED) */}
       <div className="w-full lg:w-auto mt-4 lg:mt-0 flex justify-center lg:justify-end lg:items-center">
-        <button 
-          className={buttonStyle}
-          onClick={() => onClickTerms(coupon)}
-        >
+        <button className={buttonStyle} onClick={() => onClickTerms(coupon)}>
           {coupon.btnText}
         </button>
       </div>
     </div>
   );
 };
+
 
 // Store Info Display Component
 const StoreInfoDisplay = ({ storeData, status }) => {
