@@ -159,9 +159,7 @@ const convertDealToCoupon = (deal) => {
 
 // Modified CouponCard to show tag on right side
 const CouponCard = ({ coupon, onClickTerms }) => {
-  const buttonStyle =
-    "bg-orange-500 text-white px-6 py-3 rounded-full font-medium transition-all duration-150 ease-in-out min-w-[150px] whitespace-nowrap " +
-    "hover:bg-orange-600 hover:scale-[1.03] hover:shadow-lg active:scale-95";
+  const [showTerms, setShowTerms] = useState(false);
 
   const typeColor = "orange-500";
   const typeEmoji =
@@ -171,98 +169,154 @@ const CouponCard = ({ coupon, onClickTerms }) => {
       <IoMdPricetag />
     ) : (
       <HiPercentBadge />
-    );const [showTerms, setShowTerms] = useState(false);
+    );
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col lg:flex-row justify-between items-center p-5 mb-5 relative">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-5 relative overflow-hidden">
       
-      {/* Tag badge on right side */}
-      <div className="absolute top-0 right-4">
-        <span className="flex items-center bg-green-300 gap-2 px-3 py-1 text-xs font-semibold rounded-full mt-2">
-          <MdOutlineVerified size={18} />
-          Verified
-        </span>
-      </div>
-
-      {/* NEW LEFT SECTION — 10% OFF */}
-  {/* Desktop left discount */}
-<div className="hidden lg:flex flex-shrink-0 w-24 flex-col gap-1 items-center justify-center mr-6">
-  <span className="text-3xl font-extrabold text-orange-500 leading-none">
-    10%
-  </span>
-  <span className="text-3xl font-semibold text-gray-600 leading-none">
-    OFF
-  </span>
-</div>
-
-{/* Mobile top-left tag */}
-<div className="absolute top-1 left-3 lg:hidden">
-  <span className="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-md">
-    10% OFF
-  </span>
-</div>
-
-
-      {/* Coupon Content (UNCHANGED) */}
-      <div className="flex-1 w-full lg:w-auto pr-4">
-        <div className="flex items-center gap-2 mb-2 mt-[30px] lg:mt-0">
-          <span className={`text-xs font-semibold bg-${typeColor} text-white p-2 rounded-md flex items-center`}>
-            <span className="mr-1 text-base">{typeEmoji}</span> {coupon.type}
-          </span>
-          <span className="text-xs text-gray-500">
-            {coupon.type === "Reward" && "Exclusive"}
-            {coupon.type === "Code" && "Expires soon!"}
+      {/* Desktop Layout */}
+      <div className="hidden lg:flex flex-row items-center p-5">
+        {/* Tag badge on right side */}
+        <div className="absolute top-0 right-4">
+          <span className="flex items-center bg-green-300 gap-2 px-3 py-1 text-xs font-semibold rounded-full mt-2">
+            <MdOutlineVerified size={18} />
+            Verified
           </span>
         </div>
 
-        <h3 className="text-4xl font-extrabold text-gray-900 mb-1 leading-none">
-          {coupon.title}
-        </h3>
+        {/* Desktop left discount */}
+        <div className="flex flex-shrink-0 w-24 flex-col gap-1 items-center justify-center mr-6">
+          <span className="text-3xl font-extrabold text-orange-500 leading-none">
+            10%
+          </span>
+          <span className="text-3xl font-semibold text-gray-600 leading-none">
+            OFF
+          </span>
+        </div>
 
-        <p className="text-gray-600 mt-2">{coupon.desc}</p>
+        {/* Coupon Content */}
+        <div className="flex-1 pr-4">
+          <div className="flex items-center gap-2 mb-2">
+            <span className={`text-xs font-semibold bg-${typeColor} text-white p-2 rounded-md flex items-center`}>
+              <span className="mr-1 text-base">{typeEmoji}</span> {coupon.type}
+            </span>
+            <span className="text-xs text-gray-500">
+              {coupon.type === "Reward" && "Exclusive"}
+              {coupon.type === "Code" && "Expires soon!"}
+            </span>
+          </div>
 
-        {/* Terms and Expiry */}
-        <div className="flex items-center gap-4 mt-3">
-        <button
-  onClick={() => setShowTerms(prev => !prev)}
-  className="text-gray-500 text-sm font-medium hover:underline"
->
-  Terms
-</button>
+          <h3 className="text-4xl font-extrabold text-gray-900 mb-1 leading-none">
+            {coupon.title}
+          </h3>
+
+          <p className="text-gray-600 mt-2">{coupon.desc}</p>
+
+          {/* Terms and Expiry */}
+          <div className="flex items-center gap-4 mt-3">
+            <button
+              onClick={() => setShowTerms(prev => !prev)}
+              className="text-gray-500 text-sm font-medium hover:underline"
+            >
+              Terms
+            </button>
+
+            {coupon.expiry && (
+              <p className="text-gray-400 text-sm">
+                Expiration Date:{" "}
+                <span className="font-medium">{coupon.expiry}</span>
+              </p>
+            )}
+          </div>
+          
+          <div className={`transition-all duration-300 overflow-hidden ${showTerms ? "max-h-40 mt-3" : "max-h-0"}`}>
+            <p className="text-sm text-gray-600">{coupon.desc}</p>
+          </div>
+        </div>
+
+        {/* CTA Button Section */}
+        <div className="flex justify-center items-center">
+          <button
+            className="bg-orange-500 text-white px-6 py-3 rounded-full font-medium transition-all duration-150 ease-in-out min-w-[150px] whitespace-nowrap hover:bg-orange-600 hover:scale-[1.03] hover:shadow-lg active:scale-95"
+            onClick={() => {
+              onClickTerms(coupon);
+              if (coupon.originalDeal?.redirectLink) {
+                window.open(coupon.originalDeal.redirectLink, "_blank");
+              }
+            }}
+          >
+            {coupon.btnText}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Layout - Pixel Perfect to Image */}
+      <div className="lg:hidden">
+        {/* Mobile Content Container */}
+        <div className="flex p-4 items-center">
+          {/* Left Side - Discount Amount */}
+          <div className="flex-shrink-0 pr-4 py-2 flex flex-col justify-center">
+            <div className="text-4xl font-black text-black leading-none">£120</div>
+            <div className="text-lg font-bold text-black leading-tight mt-0.5">GIFT CARD</div>
+          </div>
+
+          {/* Right Side - Content */}
+          <div className="flex-1 min-w-0">
+            {/* Badge Row */}
+            <div className="flex items-center gap-2 mb-3">
+              <span className="inline-flex items-center gap-1.5 bg-orange-500 text-white px-2.5 py-1 rounded text-xs font-semibold">
+                <span className="text-sm">{typeEmoji}</span>
+                {coupon.type}
+              </span>
+              <span className="text-sm text-gray-700">
+                {coupon.type === "Reward" && "Exclusive"}
+                {coupon.type === "Code" && "Expires soon!"}
+              </span>
+            </div>
+
+            {/* Deal Description */}
+            <p className="text-base text-gray-900 leading-snug mb-3">
+              {coupon.desc}
+            </p>
+
+            {/* CTA Button - Full Width */}
+            <button
+              className="w-full bg-orange-500 text-white py-3.5 rounded-full font-semibold text-base transition-all duration-150 ease-in-out hover:bg-orange-600 active:scale-95 flex items-center justify-center gap-2"
+              onClick={() => {
+                onClickTerms(coupon);
+                if (coupon.originalDeal?.redirectLink) {
+                  window.open(coupon.originalDeal.redirectLink, "_blank");
+                }
+              }}
+            >
+              {coupon.btnText}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Bottom Row - Terms and Expiry */}
+        <div className="flex items-center justify-between px-4 pb-4 pt-2 border-t border-gray-100">
+          <button
+            onClick={() => setShowTerms(prev => !prev)}
+            className="text-orange-500 text-sm font-medium hover:underline"
+          >
+            Terms
+          </button>
 
           {coupon.expiry && (
             <p className="text-gray-400 text-sm">
-              Expiration Date:{" "}
-              <span className="font-medium">{coupon.expiry}</span>
+              Expiration Date: <span className="font-medium">{coupon.expiry}</span>
             </p>
           )}
         </div>
-        <div
-  className={`transition-all duration-300 overflow-hidden ${
-    showTerms ? "max-h-40 mt-3" : "max-h-0"
-  }`}
->
-  <p className="text-sm text-gray-600">
-    {coupon.desc}
-  </p>
-</div>
 
-      </div>
-
-      {/* CTA Button Section (UNCHANGED) */}
-      <div className="w-full lg:w-auto mt-4 lg:mt-0 flex justify-center lg:justify-end lg:items-center">
-        <button
-  className={buttonStyle}
-  onClick={() => {
-    onClickTerms(coupon);
-    if (coupon.originalDeal?.redirectLink) {
-      window.open(coupon.originalDeal.redirectLink, "_blank");
-    }
-  }}
->
-
-          {coupon.btnText}
-        </button>
+        {/* Expandable Terms Section */}
+        <div className={`transition-all duration-300 overflow-hidden ${showTerms ? "max-h-40 px-4 pb-4" : "max-h-0"}`}>
+          <p className="text-sm text-gray-600">{coupon.desc}</p>
+        </div>
       </div>
     </div>
   );
