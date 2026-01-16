@@ -197,7 +197,7 @@ const CouponCard = ({ coupon, onClickTerms }) => {
         {/* Coupon Content */}
         <div className="flex-1 pr-4">
           <div className="flex items-center gap-2 mb-2">
-            <span className={`text-xs font-semibold bg-${typeColor} text-white p-2 rounded-md flex items-center`}>
+            <span className={`text-xs font-semibold bg-${typeColor} text-white p-1 rounded-md flex items-center`}>
               <span className="mr-1 text-base">{typeEmoji}</span> {coupon.type}
             </span>
             <span className="text-xs text-gray-500">
