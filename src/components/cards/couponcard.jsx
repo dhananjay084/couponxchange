@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import ReactDOM from "react-dom";
@@ -24,7 +25,7 @@ export default function CouponCard({
 
   const handleGoToShop = () => {
     if (redirectLink) {
-      window.open(redirectLink, "_blank"); // ✅ open in new tab
+      window.open(redirectLink, "_blank");
     } else {
       alert("Shop link not available");
     }
@@ -34,22 +35,40 @@ export default function CouponCard({
     <>
       {/* Coupon Card */}
       <div
-        className="min-w-[260px] bg-white rounded-md shadow-md overflow-hidden flex flex-col 
-        transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2 h-[350px] relative"
+        className="
+          min-w-[260px] bg-white rounded-md shadow-md overflow-hidden
+          flex flex-col max-sm:flex-row
+          transition duration-300 ease-in-out
+          hover:shadow-xl hover:-translate-y-2
+          h-[350px] max-sm:h-[200px]
+          relative
+        "
       >
-        <div className="relative">
-          <img src={image} alt={brand} className="w-full h-40 object-cover" />
+        {/* Image Section */}
+        <div className="relative max-sm:w-[40%] max-sm:h-full">
+          <img
+            src={image}
+            alt={brand}
+            className="w-full h-40 max-sm:h-full object-cover"
+          />
+
           {exclusive && (
             <div className="absolute top-2 right-2 bg-black text-white px-2 py-1 text-xs font-bold rounded shadow">
               {exclusive.toUpperCase()}
             </div>
           )}
+
           <div className="absolute bottom-2 left-2 bg-white p-1 rounded shadow">
-            <img src={logo} alt={`${brand} logo`} className="w-8 h-8 object-contain" />
+            <img
+              src={logo}
+              alt={`${brand} logo`}
+              className="w-8 h-8 object-contain"
+            />
           </div>
         </div>
 
-        <div className="p-4 pb-10 flex flex-col flex-grow">
+        {/* Content Section */}
+        <div className="p-4 pb-10 max-sm:pb-6 flex flex-col flex-grow max-sm:w-[70%]">
           <div className="flex justify-between items-start mb-2">
             {showCoupon && (
               <p
@@ -63,10 +82,19 @@ export default function CouponCard({
           </div>
 
           <h3 className="font-bold text-lg">{discount}</h3>
-          <p className="text-sm mt-1 mb-2 line-clamp-3">{description}</p>
+
+          <p className="text-sm mt-1 mb-2 line-clamp-2">
+            {description}
+          </p>
         </div>
 
-        <p className="absolute bottom-3 left-4 text-xs text-gray-400">
+        {/* Expiry Date */}
+        <p
+          className="
+            absolute bottom-3 left-4 text-xs text-gray-400
+            max-sm:bottom-2 max-sm:right-3 max-sm:left-auto
+          "
+        >
           Expires: {expiration}
         </p>
       </div>
@@ -84,14 +112,20 @@ export default function CouponCard({
               </button>
 
               <div className="flex items-center gap-2 mb-4">
-                <img src={logo} alt={`${brand} logo`} className="w-10 h-10 object-contain" />
+                <img
+                  src={logo}
+                  alt={`${brand} logo`}
+                  className="w-10 h-10 object-contain"
+                />
                 <h2 className="font-bold text-lg">{brand}</h2>
               </div>
 
               <p className="mb-4">{description}</p>
 
               <div className="flex items-center border border-dashed border-orange-500 rounded-md overflow-hidden">
-                <span className="flex-1 text-center py-2 font-bold">{code}</span>
+                <span className="flex-1 text-center py-2 font-bold">
+                  {code}
+                </span>
                 <button
                   className="bg-orange-500 text-white px-4 py-2 hover:bg-orange-600 transition"
                   onClick={handleCopy}
