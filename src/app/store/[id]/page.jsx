@@ -210,7 +210,7 @@ const CouponCard = ({ coupon, onClickTerms }) => {
             {coupon.title}
           </h3>
 
-          <p className="text-gray-600 mt-2">{coupon.desc}</p>
+          {/* <p className="text-gray-600 mt-2">{coupon.desc}</p> */}
 
           {/* Terms and Expiry */}
           <div className="flex items-center gap-4 mt-3">
