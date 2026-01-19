@@ -174,100 +174,90 @@ const CouponCard = ({ coupon, onClickTerms }) => {
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-5 relative overflow-hidden">
 
-    {/* ================= DESKTOP ================= */}
-    <div className="hidden lg:block">
+   {/* ================= DESKTOP ================= */}
+<div className="hidden lg:block">
 
-      {/* Main Desktop Row (UNCHANGED) */}
-      <div className="flex flex-row items-center p-5 relative">
+{/* Main Desktop Row */}
+<div className="flex flex-row items-center p-5 relative">
 
-        {/* Verified Badge */}
-        <div className="absolute top-0 right-4">
-          <span className="flex items-center bg-green-300 gap-2 px-3 py-1 text-xs font-semibold rounded-full mt-2">
-            <MdOutlineVerified size={18} />
-            Verified
-          </span>
-        </div>
+  {/* Verified Badge */}
+ 
 
-        {/* Left Discount (2 lines – unchanged) */}
-        <div className="flex flex-shrink-0 w-24 flex-col gap-1 items-center justify-center mr-6">
-          <span className="text-3xl font-extrabold text-orange-500 leading-none">
-            10%
-          </span>
-          <span className="text-3xl font-semibold text-gray-600 leading-none">
-            OFF
-          </span>
-        </div>
+  {/* Left Discount */}
+  <div className="flex flex-shrink-0 w-24 flex-col gap-1 items-center justify-center mr-6">
+    <span className="text-3xl font-extrabold leading-none">10%</span>
+    <span className="text-3xl font-semibold text-gray-600 leading-none">OFF</span>
+  </div>
 
-        {/* Right Content */}
-        <div className="flex-1 pr-4">
-          <div className="flex items-center gap-2 mb-2">
-            <span
-              className={`text-xs font-semibold bg-${typeColor} text-white p-1 rounded-md flex items-center`}
-            >
-              <span className="mr-1 text-base">{typeEmoji}</span>
-              {coupon.type}
-            </span>
-            <span className="text-xs text-gray-500">
-              {coupon.type === "Reward" && "Exclusive"}
-              {coupon.type === "Code" && "Expires soon!"}
-            </span>
-          </div>
-
-          <h3 className="text-4xl font-extrabold text-gray-900 mb-1 leading-none">
-            {coupon.title}
-          </h3>
-
-          {/* Terms + Expiry */}
-          <div className="flex items-center gap-4 mt-3">
-            <button
-              onClick={() => setShowTerms((prev) => !prev)}
-              className="text-gray-500 text-sm font-medium hover:underline"
-            >
-              Terms
-            </button>
-
-            {coupon.expiry && (
-              <p className="text-gray-400 text-sm">
-                Expiration Date:{" "}
-                <span className="font-medium">{coupon.expiry}</span>
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* CTA */}
-        <div className="flex justify-center items-center">
-          <button
-            className="bg-orange-500 text-white px-6 py-3 rounded-full font-medium transition-all
-                       duration-150 ease-in-out min-w-[150px] whitespace-nowrap
-                       hover:bg-orange-600 hover:scale-[1.03] hover:shadow-lg active:scale-95"
-            onClick={() => {
-              onClickTerms(coupon);
-              coupon.originalDeal?.redirectLink &&
-                window.open(coupon.originalDeal.redirectLink, "_blank");
-            }}
-          >
-            {coupon.btnText}
-          </button>
-        </div>
-      </div>
-
-      {/* ✅ Desktop Terms Expansion Row (RIGHT ONLY) */}
-      <div className="flex">
-        {/* Left empty white space */}
-        <div className="w-24 mr-6"></div>
-
-        {/* Right expandable terms */}
-        <div
-          className={`flex-1 pr-4 transition-all duration-300 overflow-hidden
-            ${showTerms ? "max-h-40 pb-4" : "max-h-0"}`}
-        >
-          <p className="text-sm text-gray-600 mt-3">
-            {coupon.desc}
-          </p>
-        </div>
-      </div>
+  {/* Right Content */}
+  <div className="flex-1 pr-4">
+    <div className="flex items-center gap-2 mb-2">
+      <span
+        className={`text-xs font-semibold bg-${typeColor} text-white p-1 rounded-md flex items-center`}
+      >
+        <span className="mr-1 text-base">{typeEmoji}</span>
+        {coupon.type}
+      </span>
+      <span className="text-xs text-gray-500">
+        {coupon.type === "Reward" && "Exclusive"}
+        {coupon.type === "Code" && "Expires soon!"}
+      </span>
+    <span className="flex items-center bg-green-300 gap-2 px-3 py-1 text-xs font-semibold rounded-full ">
+      <MdOutlineVerified size={18} />
+      Verified
+    </span>
     </div>
+
+    {/* Title */}
+    <h3 className="text-[16px] text-[rgb(36,38,40)] font-semibold mb-1 leading-none">
+      {coupon.title}
+    </h3>
+  </div>
+
+  {/* CTA */}
+  <div className="flex justify-center items-center">
+    <button
+      className="bg-orange-500 text-white px-4 py-2 rounded-full font-medium transition-all
+                 duration-150 ease-in-out min-w-[150px] whitespace-nowrap
+                 hover:bg-orange-600 hover:scale-[1.03] hover:shadow-lg active:scale-95"
+      onClick={() => {
+        onClickTerms(coupon);
+        coupon.originalDeal?.redirectLink &&
+          window.open(coupon.originalDeal.redirectLink, "_blank");
+      }}
+    >
+      {coupon.btnText}
+    </button>
+  </div>
+</div>
+
+{/* ✅ Bottom Row for Terms and Expiry */}
+<div className="flex justify-between items-center px-5 py-3 border-t border-gray-100">
+  {/* Terms on Left */}
+  <button
+    onClick={() => setShowTerms(prev => !prev)}
+    className="text-orange-500 text-sm font-medium hover:underline"
+  >
+    Terms
+  </button>
+
+  {/* Expiration on Right */}
+  {coupon.expiry && (
+    <p className="text-gray-400 text-sm">
+      Expiration Date: <span className="font-medium">{coupon.expiry}</span>
+    </p>
+  )}
+</div>
+
+{/* Expandable Terms Description */}
+<div
+  className={`px-5 transition-all duration-300 overflow-hidden
+    ${showTerms ? "max-h-40 py-3" : "max-h-0"}`}
+>
+  <p className="text-sm text-gray-600">{coupon.desc}</p>
+</div>
+</div>
+
 
     {/* ================= MOBILE (UNCHANGED) ================= */}
     <div className="lg:hidden">
@@ -325,7 +315,7 @@ const CouponCard = ({ coupon, onClickTerms }) => {
       <div className="flex items-center justify-between px-4 pb-4 pt-2 border-t border-gray-100">
         <button
           onClick={() => setShowTerms((prev) => !prev)}
-          className="text-orange-500 text-sm font-medium hover:underline"
+          className="text-orange-500 text-sm hover:underline"
         >
           Terms
         </button>
