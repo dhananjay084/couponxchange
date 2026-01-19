@@ -195,21 +195,21 @@ const CouponCard = ({ coupon, onClickTerms }) => {
       <span
         className={`text-xs font-semibold bg-${typeColor} text-white p-1 rounded-md flex items-center`}
       >
-        <span className="mr-1 text-base">{typeEmoji}</span>
+        <span className="mr-1 text-[8px]">{typeEmoji}</span>
         {coupon.type}
       </span>
-      <span className="text-xs text-gray-500">
+      <span className="text-[8px] text-gray-500">
         {coupon.type === "Reward" && "Exclusive"}
         {coupon.type === "Code" && "Expires soon!"}
       </span>
-    <span className="flex items-center bg-green-300 gap-2 px-3 py-1 text-xs font-semibold rounded-full ">
+    <span className="flex items-center bg-green-300 gap-1 p-1 text-[8px] font-semibold rounded-full ">
       <MdOutlineVerified size={18} />
       Verified
     </span>
     </div>
 
     {/* Title */}
-    <h3 className="text-[16px] text-[rgb(36,38,40)] font-semibold mb-1 leading-none">
+    <h3 className="text-[18px] text-[rgb(36,38,40)] font-semibold mb-1 leading-none">
       {coupon.title}
     </h3>
   </div>
@@ -236,9 +236,9 @@ const CouponCard = ({ coupon, onClickTerms }) => {
   {/* Terms on Left */}
   <button
     onClick={() => setShowTerms(prev => !prev)}
-    className="text-orange-500 text-sm font-medium hover:underline"
+    className="text-orange-500 text-sm  hover:underline"
   >
-    Terms
+    Details
   </button>
 
   {/* Expiration on Right */}
