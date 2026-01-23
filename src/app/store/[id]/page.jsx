@@ -283,6 +283,10 @@ const CouponCard = ({ coupon, onClickTerms }) => {
               {coupon.type === "Reward" && "Exclusive"}
               {coupon.type === "Code" && "Expires soon!"}
             </span>
+            <span className="flex items-center  gap-1 p-1 text-[8px] font-semibold rounded-full ">
+      <MdOutlineVerified size={18} />
+      
+    </span>
           </div>
 
           <p className="text-base text-gray-900 leading-snug mb-3">
@@ -675,6 +679,22 @@ const StarRating = () => {
     </div>
   );
 };
+const InlineAds = () => (
+  <div className="bg-white rounded-lg shadow-sm p-4 my-4">
+    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+      Ads
+    </h3>
+
+    <div
+      className="min-h-[90px] w-full flex items-center justify-center
+                 border border-dashed border-gray-300 rounded-md
+                 text-sm text-gray-400"
+    >
+      Ads will appear here
+    </div>
+  </div>
+);
+
 
 export default function CouponsPage() {
   const params = useParams();
@@ -926,99 +946,95 @@ export default function CouponsPage() {
           
           {/* Left Navigation Section */}
           <div className="lg:col-span-3 hidden lg:block">
-  <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 sticky top-4">
-    
-    {/* Rating Section */}
-    <div className="mb-6 pb-6 border-b">
-      <h3 className="text-lg font-semibold mb-3 text-center">
-        Rate our discount codes
-      </h3>
-      
-      {/* Star Rating Component */}
-      <StarRating />
-    </div>
+          <div className="p-6 rounded-lg sticky top-4 space-y-6">
 
-    {/* Verified offers from similar brands */}
-    <div className="pt-4">
-      <h3 className="text-lg font-semibold mb-3">Verified offers from similar brands:</h3>
-      <div className="flex flex-wrap gap-2 mb-3">
-        {uniqueCategories.map((category, i) => (
-          <button
-            key={i}
-            onClick={() => setActiveCategoryTab(category)}
-            className={`${
-              activeCategoryTab === category
-                ? "bg-orange-500 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            } px-3 py-1.5 text-xs rounded-full font-medium whitespace-nowrap transition-all`}
-          >
-            {category === "ALL" ? "ALL" : category}
-          </button>
-        ))}
-      </div>
-      <p className="text-sm text-gray-600">
-        Showing deals from <span className="font-semibold">{activeCategoryTab === "ALL" ? "all categories" : activeCategoryTab}</span>
+{/* ⭐ Rating Section */}
+<div className=" rounded-lg  p-5">
+  <h3 className="text-lg font-semibold mb-3 text-center">
+    Rate our discount codes
+  </h3>
+  <StarRating />
+</div>
+
+{/* 🏪 About Store */}
+<div className="bg-white rounded-lg shadow-sm p-5">
+  <h3 className="text-lg font-semibold mb-2">
+    About {currentStore?.storeName || "this store"}
+  </h3>
+  <p className="text-sm text-gray-600 leading-relaxed">
+    {currentStore?.storeDescription ||
+      "Find the latest verified promo codes, coupons, and exclusive deals. We regularly update offers to help you save more on every purchase."}
+  </p>
+</div>
+
+{/* 👩‍💼 About Publisher */}
+<div className="bg-white rounded-lg shadow-sm p-5">
+  <h3 className="text-lg font-semibold mb-4">
+    Our Coupon Publishers
+  </h3>
+
+  <div >
+ 
+    <div>
+      <h4 className="font-semibold text-orange-500">
+        Verity S
+      </h4>
+      <p className="text-sm text-gray-600 leading-relaxed mt-1">
+        I'm Verity, Coupons Publisher Team Lead at hotukdeals. For the past 3
+        years, I’ve been sharing money-saving know-how with shoppers. Even
+        small savings can add up to something meaningful.
       </p>
     </div>
-    
-    {/* More discount codes for popular shops */}
-    <div className="mt-8 border-t pt-4">
-      <h3 className="text-lg font-semibold mb-3">More discount codes for popular shops:</h3>
-      {/* All alphabet tabs with horizontal scroll */}
-      <div className="mb-4">
-        <div className="flex overflow-x-auto pb-2 gap-1.5">
-          {allAlphabets.map((letter) => (
-            <button
-              key={letter}
-              onClick={() => setActiveShopTab(letter)}
-              className={`
-                ${activeShopTab === letter 
-                  ? "bg-orange-500 text-white" 
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                } 
-                text-sm px-3 py-1.5 rounded font-medium whitespace-nowrap transition-all duration-150 ease-in-out
-                hover:scale-[1.03] hover:shadow-md active:scale-95 flex-shrink-0
-              `}
-            >
-              {letter}
-            </button>
-          ))}
-          <button
-            onClick={() => setActiveShopTab("0-9")}
-            className={`
-              ${activeShopTab === "0-9" 
-                ? "bg-orange-500 text-white" 
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              } 
-              text-sm px-3 py-1.5 rounded font-medium whitespace-nowrap transition-all duration-150 ease-in-out
-              hover:scale-[1.03] hover:shadow-md active:scale-95 flex-shrink-0
-            `}
-          >
-            0-9
-          </button>
-        </div>
-      </div>
-      {/* Stores list */}
-      <div className="space-y-2 text-gray-700 max-h-80 overflow-y-auto">
-        {storesForActiveTab.length > 0 ? (
-          storesForActiveTab.map((store, i) => (
-            <div 
-              key={i} 
-              className="flex justify-between items-center text-sm p-2 rounded hover:bg-gray-50 cursor-pointer transition-colors"
-              onClick={() => handleStoreClick(store._id)}
-            >
-              <span>{store.storeName}</span>
-              <span className="text-xs text-orange-500">View Codes &gt;</span>
-            </div>
-          ))
-        ) : (
-          <div className="text-center text-gray-500 py-4">
-            No stores found for "{activeShopTab}"
-          </div>
-        )}
-      </div>
-    </div>
   </div>
+</div>
+
+{/* 🏷 Verified offers from similar brands */}
+<div className="bg-white rounded-lg shadow-sm p-5">
+  <h3 className="text-lg font-semibold mb-3">
+    Verified offers from similar brands
+  </h3>
+
+  <div className="flex flex-wrap gap-2 mb-3">
+    {uniqueCategories.map((category, i) => (
+      <button
+        key={i}
+        onClick={() => setActiveCategoryTab(category)}
+        className={`${
+          activeCategoryTab === category
+            ? "bg-orange-500 text-white"
+            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+        } px-3 py-1.5 text-xs rounded-full font-medium whitespace-nowrap transition-all`}
+      >
+        {category === "ALL" ? "ALL" : category}
+      </button>
+    ))}
+  </div>
+
+  <p className="text-sm text-gray-600">
+    Showing deals from{" "}
+    <span className="font-semibold">
+      {activeCategoryTab === "ALL" ? "all categories" : activeCategoryTab}
+    </span>
+  </p>
+</div>
+
+{/* 📢 Google Ads Section */}
+<div className="bg-white rounded-lg shadow-sm p-5">
+  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
+    Ads
+  </h3>
+
+  {/* Google Ads will be injected here */}
+  <div
+    id="google-ads-container"
+    className="min-h-[250px] flex items-center justify-center border border-dashed border-gray-300 rounded-md text-sm text-gray-400"
+  >
+    Google Ads will appear here
+  </div>
+</div>
+
+</div>
+
 </div>
 
           {/* Right Coupon Cards Section */}
@@ -1034,33 +1050,42 @@ export default function CouponsPage() {
             />
           ))}
         </div>
-            {!loadingDeals && filteredDeals.length > 0 ? (
-              filteredDeals.map((coupon, i) => (
-                <CouponCard 
-                  key={i} 
-                  coupon={coupon} 
-                  onClickTerms={setSelectedCoupon} 
-                />
-              ))
-            ) : !loadingDeals && filteredDeals.length === 0 ? (
-              <div className="bg-white p-8 rounded-lg text-center">
-                <div className="text-4xl mb-4">😔</div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">No deals found</h3>
-                <p className="text-gray-600">
-                  No deals available for {currentStore?.storeName || "this store"} yet.
-                  {activeTab !== "All Offers" && ` in "${activeTab}"`}
-                  {activeCategoryTab !== "ALL" && ` with category "${activeCategoryTab}"`}
-                </p>
-                <div className="mt-4">
-                  <button 
-                    onClick={() => setActiveTab("All Offers")}
-                    className="text-orange-500 hover:underline"
-                  >
-                    View all offers
-                  </button>
-                </div>
-              </div>
-            ) : null}
+        {!loadingDeals && filteredDeals.length > 0 ? (
+  filteredDeals.map((coupon, i) => (
+    <React.Fragment key={i}>
+      <CouponCard
+        coupon={coupon}
+        onClickTerms={setSelectedCoupon}
+      />
+
+      {/* 👉 Insert Ads after every 3 cards */}
+      {(i + 1) % 3 === 0 && (
+        <InlineAds />
+      )}
+    </React.Fragment>
+  ))
+) : !loadingDeals && filteredDeals.length === 0 ? (
+  <div className="bg-white p-8 rounded-lg text-center">
+    <div className="text-4xl mb-4">😔</div>
+    <h3 className="text-lg font-semibold text-gray-800 mb-2">
+      No deals found
+    </h3>
+    <p className="text-gray-600">
+      No deals available for {currentStore?.storeName || "this store"} yet.
+      {activeTab !== "All Offers" && ` in "${activeTab}"`}
+      {activeCategoryTab !== "ALL" && ` with category "${activeCategoryTab}"`}
+    </p>
+    <div className="mt-4">
+      <button
+        onClick={() => setActiveTab("All Offers")}
+        className="text-orange-500 hover:underline"
+      >
+        View all offers
+      </button>
+    </div>
+  </div>
+) : null}
+
           </div>
         </div>
       </div>
