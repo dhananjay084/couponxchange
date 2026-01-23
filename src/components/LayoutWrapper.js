@@ -17,7 +17,7 @@ export default function LayoutWrapper({ children }) {
     <>
       {!shouldHideHeader && <Header />}
       <main className={`${!shouldHideHeader ? "pt-20" : ""}`}>
-        <div className="mt-2 max-w-[90%] mx-auto">
+        <div className="mt-2 max-w-[95%] mx-auto">
         <Provider store={store}>
           {children}
           <ScrollToTop />

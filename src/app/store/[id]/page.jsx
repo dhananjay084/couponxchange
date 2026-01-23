@@ -530,6 +530,151 @@ const DealModal = ({ deal, isOpen, onClose }) => {
     </div>
   );
 };
+// Star Rating Component with half-star selection
+// Star Rating Component with half-star selection
+const StarRating = () => {
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [isHoveringHalf, setIsHoveringHalf] = useState(false);
+  const [starRefs, setStarRefs] = useState([]);
+  
+  // Create refs for each star
+  useEffect(() => {
+    setStarRefs((refs) => 
+      Array(5)
+        .fill()
+        .map((_, i) => refs[i] || React.createRef())
+    );
+  }, []);
+
+  const handleStarClick = (value, isHalf = false) => {
+    const finalRating = isHalf ? value - 0.5 : value;
+    setRating(finalRating);
+    console.log(`Rating submitted: ${finalRating}`);
+  };
+
+  const handleStarHover = (event, starIndex, isHalf = false) => {
+    const finalRating = isHalf ? starIndex + 0.5 : starIndex + 1;
+    setHoverRating(finalRating);
+    setIsHoveringHalf(isHalf);
+  };
+
+  const handleMouseLeave = () => {
+    setHoverRating(0);
+    setIsHoveringHalf(false);
+  };
+
+  const calculateHoverPosition = (event, starIndex) => {
+    if (starRefs[starIndex]?.current) {
+      const starRect = starRefs[starIndex].current.getBoundingClientRect();
+      const mouseX = event.clientX - starRect.left;
+      const starWidth = starRect.width;
+      
+      // If mouse is in left half of the star
+      if (mouseX < starWidth / 2) {
+        handleStarHover(event, starIndex, true); // Half star
+      } else {
+        handleStarHover(event, starIndex, false); // Full star
+      }
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center">
+     
+      
+      <div 
+        className="flex items-center gap-1 mb-2"
+        onMouseLeave={handleMouseLeave}
+      >
+        {[0, 1, 2, 3, 4].map((starIndex) => {
+          const starValue = starIndex + 1;
+          const displayRating = hoverRating || rating;
+          const isFilled = displayRating >= starValue;
+          const isHalfFilled = displayRating >= starValue - 0.5 && displayRating < starValue;
+          const showHalf = (hoverRating && hoverRating === starValue - 0.5) || (!hoverRating && rating === starValue - 0.5);
+
+          return (
+            <div 
+              key={starIndex}
+              ref={starRefs[starIndex]}
+              className="relative cursor-pointer"
+              onClick={(e) => {
+                const starRect = e.currentTarget.getBoundingClientRect();
+                const mouseX = e.clientX - starRect.left;
+                const starWidth = starRect.width;
+                
+                if (mouseX < starWidth / 2) {
+                  handleStarClick(starValue, true); // Half star click
+                } else {
+                  handleStarClick(starValue, false); // Full star click
+                }
+              }}
+              onMouseMove={(e) => calculateHoverPosition(e, starIndex)}
+              onMouseEnter={(e) => calculateHoverPosition(e, starIndex)}
+            >
+              {/* Background Star (Always Gray) */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-10 h-10 text-gray-300"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              
+              {/* Foreground Star (Orange Fill) */}
+              <div
+                className="absolute top-0 left-0 overflow-hidden"
+                style={{ 
+                  width: showHalf ? '50%' : isFilled ? '100%' : '0%'
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-10 h-10 text-orange-500"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      
+      {/* Rating Labels */}
+      {/* <div className="text-center text-sm text-gray-600 mt-2">
+        {rating === 0 ? (
+          <span>Click to rate</span>
+        ) : (
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-orange-500">{rating.toFixed(1)}</span>
+            <span>out of 5</span>
+          </div>
+        )}
+      </div> */}
+      
+      {/* Rating Description */}
+      {/* <div className="text-xs text-gray-500 mt-1 text-center">
+        {rating >= 4.5 && "Excellent!"}
+        {rating >= 3.5 && rating < 4.5 && "Good"}
+        {rating >= 2.5 && rating < 3.5 && "Average"}
+        {rating >= 1.5 && rating < 2.5 && "Poor"}
+        {rating > 0 && rating < 1.5 && "Very Poor"}
+      </div> */}
+    </div>
+  );
+};
 
 export default function CouponsPage() {
   const params = useParams();
@@ -719,41 +864,40 @@ export default function CouponsPage() {
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     {/* Make this a grid like the content below */}
     <div className="grid grid-cols-2 lg:grid-cols-12 gap-6 items-center bg-white shadow-sm rounded-lg min-h-[135px]">
-      
-      {/* Left: Store Logo */}
-      <div className="lg:col-span-3 flex justify-center lg:justify-start">
-        {currentStore?.storeLogo ? (
-          <img 
-            src={currentStore.storeLogo} 
-            alt={currentStore.storeName} 
-            className="w-full max-h-[135px] h-full object-contain rounded-lg"
-          />
-        ) : (
-          <div className="w-24 h-24 bg-gradient-to-br from-orange-100 to-pink-100 rounded-lg flex items-center justify-center">
-            <span className="text-gray-700 font-semibold text-3xl">
-              {currentStore?.storeName?.charAt(0) || 'S'}
-            </span>
-          </div>
-        )}
+  
+  {/* Left: Store Logo - 30% on mobile, 3 cols on desktop */}
+  <div className="col-span-1 lg:col-span-3 flex justify-center lg:justify-start">
+    {currentStore?.storeLogo ? (
+      <img 
+        src={currentStore.storeLogo} 
+        alt={currentStore.storeName} 
+        className="w-full max-h-[135px] h-full object-contain rounded-lg"
+      />
+    ) : (
+      <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-orange-100 to-pink-100 rounded-lg flex items-center justify-center">
+        <span className="text-gray-700 font-semibold text-2xl lg:text-3xl">
+          {currentStore?.storeName?.charAt(0) || 'S'}
+        </span>
       </div>
+    )}
+  </div>
 
-      {/* Right: Store Title and Description */}
-      <div className="lg:col-span-9 py-2">
-        <h1 className="text-[14px] md:text-[24px] font-bold">
-          {currentStore ? `${currentStore.storeName} Promo Codes & Coupons` : "Loading Store..."}
-        </h1>
-        <p className="text-gray-500 text-[12px] md:text-[16px] font-semibold">
-  {totalCouponsCount > 0
-    ? `${totalCouponsCount} verified offers on ${new Date().toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      })}`
-    : "Loading deals..."}
-</p>
-
-      </div>
-    </div>
+  {/* Right: Store Title and Description - 70% on mobile, 9 cols on desktop */}
+  <div className="col-span-1 lg:col-span-9 py-2 px-2">
+    <h1 className="text-[14px] md:text-[24px] font-bold">
+      {currentStore ? `${currentStore.storeName} Promo Codes & Coupons` : "Loading Store..."}
+    </h1>
+    <p className="text-gray-500 text-[12px] md:text-[16px] font-semibold">
+      {totalCouponsCount > 0
+        ? `${totalCouponsCount} verified offers on ${new Date().toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          })}`
+        : "Loading deals..."}
+    </p>
+  </div>
+</div>
   </div>
 </div>
 
@@ -782,100 +926,100 @@ export default function CouponsPage() {
           
           {/* Left Navigation Section */}
           <div className="lg:col-span-3 hidden lg:block">
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 sticky top-4">
-              
-              <h3 className="text-lg font-semibold mb-3">How to save</h3>
-              <ul className="space-y-3 text-gray-700">
-                {navLinks.map((link, i) => (
-                  <li key={i} className="flex items-start text-sm hover:text-orange-500 transition-colors cursor-pointer">
-                    <span className="text-orange-500 mr-2 mt-1">⭐</span>
-                    <span className="flex-1">{link}</span>
-                  </li>
-                ))}
-              </ul>
+  <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 sticky top-4">
+    
+    {/* Rating Section */}
+    <div className="mb-6 pb-6 border-b">
+      <h3 className="text-lg font-semibold mb-3 text-center">
+        Rate our discount codes
+      </h3>
+      
+      {/* Star Rating Component */}
+      <StarRating />
+    </div>
 
-              {/* Verified offers from similar brands */}
-              <div className="mt-8 border-t pt-4">
-                <h3 className="text-lg font-semibold mb-3">Verified offers from similar brands:</h3>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {uniqueCategories.map((category, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setActiveCategoryTab(category)}
-                      className={`${
-                        activeCategoryTab === category
-                          ? "bg-orange-500 text-white"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                      } px-3 py-1.5 text-xs rounded-full font-medium whitespace-nowrap transition-all`}
-                    >
-                      {category === "ALL" ? "ALL" : category}
-                    </button>
-                  ))}
-                </div>
-                <p className="text-sm text-gray-600">
-                  Showing deals from <span className="font-semibold">{activeCategoryTab === "ALL" ? "all categories" : activeCategoryTab}</span>
-                </p>
-              </div>
-              
-              {/* More discount codes for popular shops */}
-              <div className="mt-8 border-t pt-4">
-                <h3 className="text-lg font-semibold mb-3">More discount codes for popular shops:</h3>
-                {/* All alphabet tabs with horizontal scroll */}
-                <div className="mb-4">
-                  <div className="flex overflow-x-auto pb-2 gap-1.5">
-                    {allAlphabets.map((letter) => (
-                      <button
-                        key={letter}
-                        onClick={() => setActiveShopTab(letter)}
-                        className={`
-                          ${activeShopTab === letter 
-                            ? "bg-orange-500 text-white" 
-                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                          } 
-                          text-sm px-3 py-1.5 rounded font-medium whitespace-nowrap transition-all duration-150 ease-in-out
-                          hover:scale-[1.03] hover:shadow-md active:scale-95 flex-shrink-0
-                        `}
-                      >
-                        {letter}
-                      </button>
-                    ))}
-                    <button
-                      onClick={() => setActiveShopTab("0-9")}
-                      className={`
-                        ${activeShopTab === "0-9" 
-                          ? "bg-orange-500 text-white" 
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        } 
-                        text-sm px-3 py-1.5 rounded font-medium whitespace-nowrap transition-all duration-150 ease-in-out
-                        hover:scale-[1.03] hover:shadow-md active:scale-95 flex-shrink-0
-                      `}
-                    >
-                      0-9
-                    </button>
-                  </div>
-                </div>
-                {/* Stores list */}
-                <div className="space-y-2 text-gray-700 max-h-80 overflow-y-auto">
-                  {storesForActiveTab.length > 0 ? (
-                    storesForActiveTab.map((store, i) => (
-                      <div 
-                        key={i} 
-                        className="flex justify-between items-center text-sm p-2 rounded hover:bg-gray-50 cursor-pointer transition-colors"
-                        onClick={() => handleStoreClick(store._id)}
-                      >
-                        <span>{store.storeName}</span>
-                        <span className="text-xs text-orange-500">View Codes &gt;</span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center text-gray-500 py-4">
-                      No stores found for "{activeShopTab}"
-                    </div>
-                  )}
-                </div>
-              </div>
+    {/* Verified offers from similar brands */}
+    <div className="pt-4">
+      <h3 className="text-lg font-semibold mb-3">Verified offers from similar brands:</h3>
+      <div className="flex flex-wrap gap-2 mb-3">
+        {uniqueCategories.map((category, i) => (
+          <button
+            key={i}
+            onClick={() => setActiveCategoryTab(category)}
+            className={`${
+              activeCategoryTab === category
+                ? "bg-orange-500 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            } px-3 py-1.5 text-xs rounded-full font-medium whitespace-nowrap transition-all`}
+          >
+            {category === "ALL" ? "ALL" : category}
+          </button>
+        ))}
+      </div>
+      <p className="text-sm text-gray-600">
+        Showing deals from <span className="font-semibold">{activeCategoryTab === "ALL" ? "all categories" : activeCategoryTab}</span>
+      </p>
+    </div>
+    
+    {/* More discount codes for popular shops */}
+    <div className="mt-8 border-t pt-4">
+      <h3 className="text-lg font-semibold mb-3">More discount codes for popular shops:</h3>
+      {/* All alphabet tabs with horizontal scroll */}
+      <div className="mb-4">
+        <div className="flex overflow-x-auto pb-2 gap-1.5">
+          {allAlphabets.map((letter) => (
+            <button
+              key={letter}
+              onClick={() => setActiveShopTab(letter)}
+              className={`
+                ${activeShopTab === letter 
+                  ? "bg-orange-500 text-white" 
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                } 
+                text-sm px-3 py-1.5 rounded font-medium whitespace-nowrap transition-all duration-150 ease-in-out
+                hover:scale-[1.03] hover:shadow-md active:scale-95 flex-shrink-0
+              `}
+            >
+              {letter}
+            </button>
+          ))}
+          <button
+            onClick={() => setActiveShopTab("0-9")}
+            className={`
+              ${activeShopTab === "0-9" 
+                ? "bg-orange-500 text-white" 
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              } 
+              text-sm px-3 py-1.5 rounded font-medium whitespace-nowrap transition-all duration-150 ease-in-out
+              hover:scale-[1.03] hover:shadow-md active:scale-95 flex-shrink-0
+            `}
+          >
+            0-9
+          </button>
+        </div>
+      </div>
+      {/* Stores list */}
+      <div className="space-y-2 text-gray-700 max-h-80 overflow-y-auto">
+        {storesForActiveTab.length > 0 ? (
+          storesForActiveTab.map((store, i) => (
+            <div 
+              key={i} 
+              className="flex justify-between items-center text-sm p-2 rounded hover:bg-gray-50 cursor-pointer transition-colors"
+              onClick={() => handleStoreClick(store._id)}
+            >
+              <span>{store.storeName}</span>
+              <span className="text-xs text-orange-500">View Codes &gt;</span>
             </div>
+          ))
+        ) : (
+          <div className="text-center text-gray-500 py-4">
+            No stores found for "{activeShopTab}"
           </div>
+        )}
+      </div>
+    </div>
+  </div>
+</div>
 
           {/* Right Coupon Cards Section */}
           <div className="lg:col-span-9">
