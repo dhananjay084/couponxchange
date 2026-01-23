@@ -548,6 +548,7 @@ export default function CouponsPage() {
   const [loadingDeals, setLoadingDeals] = useState(false);
   const [uniqueCategories, setUniqueCategories] = useState([]);
   const [storesByLetter, setStoresByLetter] = useState({});
+  const [totalCouponsCount, setTotalCouponsCount] = useState(0);
 
   // Define the four specific tabs
   const TABS = [
@@ -671,7 +672,8 @@ export default function CouponsPage() {
         currentStore.storeName && 
         deal.dealStore.toLowerCase() === currentStore.storeName.toLowerCase()
       );
-      
+      setTotalCouponsCount(matchingDeals.length);
+
       // Convert to coupon format with assigned tags
       let couponDeals = matchingDeals.map(deal => convertDealToCoupon(deal));
       
@@ -737,14 +739,19 @@ export default function CouponsPage() {
 
       {/* Right: Store Title and Description */}
       <div className="lg:col-span-9 py-2">
-        <h1 className="text-xl font-semibold">
-          {currentStore ? `${currentStore.storeName} Deals` : "Loading Store..."}
+        <h1 className="text-xl font-bold">
+          {currentStore ? `${currentStore.storeName} Promo Codes & Coupons` : "Loading Store..."}
         </h1>
-        <p className="text-gray-500 text-sm">
-          {filteredDeals.length > 0 
-            ? `Browse ${filteredDeals.length} working deals and save with active promo codes`
-            : "Loading deals..."}
-        </p>
+        <p className="text-gray-500 text-sm font-semibold">
+  {totalCouponsCount > 0
+    ? `${totalCouponsCount} verified offers on ${new Date().toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      })}`
+    : "Loading deals..."}
+</p>
+
       </div>
     </div>
   </div>
