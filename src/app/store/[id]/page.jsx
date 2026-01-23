@@ -112,14 +112,14 @@ const TabButton = ({ text, isActive, onClick, icon = null }) => (
     className={`${
       isActive
         ? "bg-orange-500 text-white"
-        : "border border-orange-500 text-orange-500 hover:bg-orange-50"
-    } px-4 py-1.5 text-sm font-medium rounded-md whitespace-nowrap transition-all duration-150 ease-in-out
-    hover:scale-[1.03] hover:shadow-md active:scale-95 flex items-center gap-2`} 
+        : "border border-orange-500 text-orange-500 cursor-pointer hover:bg-orange-100"
+    } px-4 py-1.5 text-sm font-medium rounded-md whitespace-nowrap transition-colors duration-150 ease-in-out
+    flex items-center gap-2`} 
   >
-    {/* {icon && icon} */}
     {text}
   </button>
 );
+
 
 // Convert deal object to coupon format for display with tag assignment
 const convertDealToCoupon = (deal) => {
@@ -210,7 +210,7 @@ const CouponCard = ({ coupon, onClickTerms }) => {
     </div>
 
     {/* Title */}
-    <h3 className="text-[18px] text-[rgb(36,38,40)] font-semibold mb-1 leading-none">
+    <h3 className="text-[20px] text-[rgb(36,38,40)] font-semibold mb-1 leading-none">
       {coupon.title}
     </h3>
   </div>
@@ -713,38 +713,43 @@ export default function CouponsPage() {
     <div className="bg-[#f7f7f7] min-h-screen w-full font-sans">
       
       {/* Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center gap-4">
-          {/* Store Logo Block */}
-          <div className="rounded-lg flex-shrink-0">
-            {currentStore?.storeLogo ? (
-              <img 
-                src={currentStore.storeLogo} 
-                alt={currentStore.storeName} 
-                className="w-24 h-24 object-contain"
-              />
-            ) : (
-              <div className="w-24 h-24 bg-gradient-to-br from-orange-100 to-pink-100 rounded-lg flex items-center justify-center">
-                <span className="text-gray-700 font-semibold text-3xl">
-                  {currentStore?.storeName?.charAt(0) || 'S'}
-                </span>
-              </div>
-            )}
+      <div className="bg-[#f7f7f7] py-5">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {/* Make this a grid like the content below */}
+    <div className="grid grid-cols-2 lg:grid-cols-12 gap-6 items-center bg-white shadow-sm rounded-lg min-h-[135px]">
+      
+      {/* Left: Store Logo */}
+      <div className="lg:col-span-3 flex justify-center lg:justify-start">
+        {currentStore?.storeLogo ? (
+          <img 
+            src={currentStore.storeLogo} 
+            alt={currentStore.storeName} 
+            className="w-full max-h-[135px] h-full object-contain rounded-lg"
+          />
+        ) : (
+          <div className="w-24 h-24 bg-gradient-to-br from-orange-100 to-pink-100 rounded-lg flex items-center justify-center">
+            <span className="text-gray-700 font-semibold text-3xl">
+              {currentStore?.storeName?.charAt(0) || 'S'}
+            </span>
           </div>
-          
-          {/* Title Section */}
-          <div className="py-2">
-            <h1 className="text-xl font-semibold">
-              {currentStore ? `${currentStore.storeName} Deals` : "Loading Store..."}
-            </h1>
-            <p className="text-gray-500 text-sm">
-              {filteredDeals.length > 0 
-                ? `Browse ${filteredDeals.length} working deals and save with active promo codes`
-                : "Loading deals..."}
-            </p>
-          </div>
-        </div>
+        )}
       </div>
+
+      {/* Right: Store Title and Description */}
+      <div className="lg:col-span-9 py-2">
+        <h1 className="text-xl font-semibold">
+          {currentStore ? `${currentStore.storeName} Deals` : "Loading Store..."}
+        </h1>
+        <p className="text-gray-500 text-sm">
+          {filteredDeals.length > 0 
+            ? `Browse ${filteredDeals.length} working deals and save with active promo codes`
+            : "Loading deals..."}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
