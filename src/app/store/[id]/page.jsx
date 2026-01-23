@@ -318,7 +318,7 @@ const CouponCard = ({ coupon, onClickTerms }) => {
           onClick={() => setShowTerms((prev) => !prev)}
           className="text-orange-500 text-sm hover:underline"
         >
-          Terms
+          Details
         </button>
 
         {coupon.expiry && (
@@ -739,10 +739,10 @@ export default function CouponsPage() {
 
       {/* Right: Store Title and Description */}
       <div className="lg:col-span-9 py-2">
-        <h1 className="text-xl font-bold">
+        <h1 className="text-[14px] md:text-[24px] font-bold">
           {currentStore ? `${currentStore.storeName} Promo Codes & Coupons` : "Loading Store..."}
         </h1>
-        <p className="text-gray-500 text-sm font-semibold">
+        <p className="text-gray-500 text-[12px] md:text-[16px] font-semibold">
   {totalCouponsCount > 0
     ? `${totalCouponsCount} verified offers on ${new Date().toLocaleDateString("en-IN", {
         day: "2-digit",
