@@ -8,6 +8,7 @@ import { fetchStores } from "@/api/storeApi";
 import { MdOutlineVerified } from "react-icons/md";
 import { HiPercentBadge } from "react-icons/hi2";
 import { IoMdPricetag } from "react-icons/io";
+import { TbCirclePercentage } from "react-icons/tb";
 
 // --- Inline Icon Components ---
 const StarIcon = ({ size = 22, className = "" }) => (
@@ -145,7 +146,7 @@ const convertDealToCoupon = (deal) => {
   }
   
   return {
-    type: hasCode ? "Code" : "Deal",
+    type: hasCode ? "CODE" : "DEAL",
     title: deal.dealTitle || "Deal",
     desc: deal.dealDescription || "",
     btnText: hasCode ? "See Code*" : "See Deal*",
@@ -164,11 +165,11 @@ const CouponCard = ({ coupon, onClickTerms }) => {
   const typeColor = "orange-500";
   const typeEmoji =
     coupon.type === "Reward" ? (
-      <HiPercentBadge />
+      <TbCirclePercentage />
     ) : coupon.type === "Code" ? (
       <IoMdPricetag />
     ) : (
-      <HiPercentBadge />
+      <TbCirclePercentage />
     );
 
   return (
@@ -193,18 +194,18 @@ const CouponCard = ({ coupon, onClickTerms }) => {
   <div className="flex-1 pr-4">
     <div className="flex items-center gap-2 mb-2">
       <span
-        className={`text-xs font-semibold bg-${typeColor} text-white p-1 rounded-md flex items-center`}
+        className={`text-xs font-semibold bg-${typeColor} text-white px-[8px] py-[4px] rounded-xl flex items-center`}
       >
-        <span className="mr-1 text-[8px]">{typeEmoji}</span>
+        <span className="mr-1 text-[16px]">{typeEmoji}</span>
         {coupon.type}
       </span>
       <span className="text-[8px] text-gray-500">
         {coupon.type === "Reward" && "Exclusive"}
         {coupon.type === "Code" && "Expires soon!"}
       </span>
-    <span className="flex items-center bg-green-300 gap-1 p-1 text-[8px] font-semibold rounded-full ">
+    <span className="flex items-center  gap-1 p-1 text-[8px] font-semibold rounded-full ">
       <MdOutlineVerified size={18} />
-      Verified
+      
     </span>
     </div>
 
