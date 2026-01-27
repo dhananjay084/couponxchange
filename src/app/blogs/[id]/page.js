@@ -4,6 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "next/navigation";
 import { fetchBlog } from "../../../api/blogApi";
 import Link from "next/link";
+import { CiTwitter } from "react-icons/ci";
+import { CiFacebook } from "react-icons/ci";
+import { CiLinkedin } from "react-icons/ci";
+
 
 // Demo related blogs data - you can replace this with actual API call
 const demoRelatedBlogs = [
@@ -168,6 +172,8 @@ export default function BlogDetailPage() {
         <div>
           <h3 className="font-semibold">{blog.author.name}</h3>
           <p className="text-sm text-gray-600">{blog.author.bio}</p>
+          <p className="text-sm text-gray-600 flex gap-2"><CiTwitter/><CiFacebook/><CiLinkedin/></p>
+
         </div>
       </div>
 
