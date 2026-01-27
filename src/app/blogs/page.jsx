@@ -272,7 +272,7 @@ export default function BlogsPage() {
                     <img
                       src={getBlogImage(blog)}
                       alt={blog.title}
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                      className="w-full h-full object-cover transition-transform "
                     />
                     <span className="absolute top-3 left-3 bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-md">
                       {getCategoryName(blog.category)}
