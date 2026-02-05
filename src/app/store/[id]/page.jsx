@@ -825,8 +825,8 @@ const StarRating = () => {
 
 const InlineAds = () => (
   <div className="bg-white rounded-lg shadow-sm p-4 my-4">
-    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
-      Ads
+    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2 text-center">
+      Advertisement
     </h3>
 
     <div
