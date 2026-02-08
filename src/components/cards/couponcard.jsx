@@ -33,10 +33,12 @@ export default function CouponCard({
 
   return (
     <>
-      {/* Coupon Card */}
+      {/* Coupon Card    //  max-w-[320px]*/}
+    
+
       <div
         className="
-          w-full max-w-[320px]
+          w-full
           bg-white rounded-md shadow-md overflow-hidden
           flex flex-col
           transition duration-300 ease-in-out
