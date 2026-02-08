@@ -36,20 +36,21 @@ export default function CouponCard({
       {/* Coupon Card */}
       <div
         className="
-          min-w-[260px] bg-white rounded-md shadow-md overflow-hidden
-          flex flex-col max-sm:flex-row
+          w-full max-w-[320px]
+          bg-white rounded-md shadow-md overflow-hidden
+          flex flex-col
           transition duration-300 ease-in-out
           hover:shadow-xl hover:-translate-y-2
-          h-[350px] max-sm:h-[200px]
+          h-[350px]
           relative
         "
       >
         {/* Image Section */}
-        <div className="relative max-sm:w-[40%] max-sm:h-full">
+        <div className="relative w-full">
           <img
             src={image}
             alt={brand}
-            className="w-full h-40 max-sm:h-full object-cover"
+            className="w-full h-40 object-cover"
           />
 
           {exclusive && (
@@ -68,7 +69,7 @@ export default function CouponCard({
         </div>
 
         {/* Content Section */}
-        <div className="p-4 pb-10 max-sm:pb-6 flex flex-col flex-grow max-sm:w-[70%]">
+        <div className="p-4 pb-10 flex flex-col flex-grow">
           <div className="flex justify-between items-start mb-2">
             {showCoupon && (
               <p
@@ -89,12 +90,7 @@ export default function CouponCard({
         </div>
 
         {/* Expiry Date */}
-        <p
-          className="
-            absolute bottom-3 left-4 text-xs text-gray-400
-            max-sm:bottom-2 max-sm:right-3 max-sm:left-auto
-          "
-        >
+        <p className="absolute bottom-3 left-4 text-xs text-gray-400">
           Expires: {expiration}
         </p>
       </div>
