@@ -109,6 +109,10 @@ export default function BlogsPage() {
     }, {});
   }, [publishedBlogs]);
 
+  const categoryEntries = useMemo(() => {
+    return [["all", publishedBlogs.length], ...Object.entries(categories)];
+  }, [categories, publishedBlogs.length]);
+
   // Filter blogs by selected category
   const filteredBlogs = useMemo(() => {
     if (selectedCategory === 'all') {
@@ -197,7 +201,7 @@ export default function BlogsPage() {
         
         {/* Category Tabs - No All tab, no blue borders */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-6 my-8">
-          {Object.entries(categories).map(([category, count]) => (
+          {categoryEntries.map(([category, count]) => (
             <button
               key={category}
               onClick={() => handleCategoryClick(category)}

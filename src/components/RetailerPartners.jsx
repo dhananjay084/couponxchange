@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const RetailerPartners = ({ heading, description, retailers }) => {
@@ -49,15 +50,25 @@ const RetailerPartners = ({ heading, description, retailers }) => {
         >
           <div className="flex flex-wrap gap-3 py-2">
             {retailers.map((retailer, idx) => (
-              <a
-                key={idx}
-                href={retailer.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-orange-500 text-orange-500 px-4 py-2 rounded hover:bg-orange-100 transition text-sm md:text-base"
-              >
-                {retailer.name}
-              </a>
+              String(retailer.url || '').startsWith('http') ? (
+                <a
+                  key={idx}
+                  href={retailer.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="border border-orange-500 text-orange-500 px-4 py-2 rounded hover:bg-orange-100 transition text-sm md:text-base"
+                >
+                  {retailer.name}
+                </a>
+              ) : (
+                <Link
+                  key={idx}
+                  href={retailer.url || '#'}
+                  className="border border-orange-500 text-orange-500 px-4 py-2 rounded hover:bg-orange-100 transition text-sm md:text-base"
+                >
+                  {retailer.name}
+                </Link>
+              )
             ))}
           </div>
         </div>

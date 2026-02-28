@@ -16,6 +16,7 @@ export default function CouponCard({
   redirectLink,
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const hasExpiration = Boolean(expiration && String(expiration).trim());
 
   const handleCopy = () => {
     navigator.clipboard.writeText(code);
@@ -29,8 +30,14 @@ export default function CouponCard({
   };
 
   const handleCardClick = () => {
-    // If NO coupon code → redirect on card click
-    if (!code && redirectLink) {
+    // If coupon code exists, open modal from anywhere on card click.
+    if (code) {
+      setIsModalOpen(true);
+      return;
+    }
+
+    // If no code exists, redirect on card click.
+    if (redirectLink) {
       handleGoToShop();
     }
   };
@@ -53,7 +60,7 @@ export default function CouponCard({
           <img src={image} alt={brand} className="w-full h-40 object-cover" />
 
           {exclusive && (
-            <div className="absolute top-2 right-2 bg-black text-white px-2 py-1 text-xs font-bold rounded shadow">
+            <div className="absolute top-2 right-2 bg-[var(--brand-primary)] text-white px-2 py-1 text-xs font-bold rounded shadow">
               {exclusive.toUpperCase()}
             </div>
           )}
@@ -73,12 +80,12 @@ export default function CouponCard({
                   e.stopPropagation(); // ⛔ stop card redirect
                   setIsModalOpen(true);
                 }}
-                className="cursor-pointer text-orange-500 font-semibold"
+                className="cursor-pointer text-[var(--brand-secondary)] font-semibold"
               >
                 Code
               </p>
             ) : (
-              <p className="text-green-600 font-semibold">Deal</p>
+              <p className="text-[var(--brand-secondary)] font-semibold">Deal</p>
             )}
 
             <p className="text-sm text-gray-500">{brand}</p>
@@ -90,9 +97,11 @@ export default function CouponCard({
         </div>
 
         {/* Expiry */}
-        <p className="absolute bottom-3 left-4 text-xs text-gray-400">
-          Expires: {expiration}
-        </p>
+        {hasExpiration ? (
+          <p className="absolute bottom-3 left-4 text-xs text-gray-400">
+            Expires: {expiration}
+          </p>
+        ) : null}
       </div>
 
       {/* Modal (only when code exists) */}
@@ -115,10 +124,10 @@ export default function CouponCard({
 
               <p className="mb-4">{description}</p>
 
-              <div className="flex items-center border border-dashed border-orange-500 rounded-md overflow-hidden">
+              <div className="flex items-center border border-dashed border-[var(--brand-secondary)] rounded-md overflow-hidden">
                 <span className="flex-1 text-center py-2 font-bold">{code}</span>
                 <button
-                  className="bg-orange-500 text-white px-4 py-2 hover:bg-orange-600 transition"
+                  className="bg-[var(--brand-secondary)] text-white px-4 py-2 hover:bg-[#0e9674] transition"
                   onClick={handleCopy}
                 >
                   Copy Code
@@ -127,7 +136,7 @@ export default function CouponCard({
 
               <button
                 onClick={handleGoToShop}
-                className="mt-4 text-orange-500 font-semibold hover:underline"
+                className="mt-4 text-[var(--brand-primary)] font-semibold hover:underline"
               >
                 Go to shop
               </button>

@@ -255,6 +255,8 @@ const TabButton = ({ text, isActive, onClick, icon = null }) => (
 // Convert deal object to coupon format for display with tag assignment - UPDATED FOR EXPIRED
 const convertDealToCoupon = (deal, isExpired = false) => {
   const hasCode = deal.dealCode && deal.dealCode.trim() !== "";
+  const parsedExpiry = deal.expirationDate ? new Date(deal.expirationDate) : null;
+  const hasValidExpiry = parsedExpiry && !Number.isNaN(parsedExpiry.getTime());
   
   // Determine which tag to assign based on conditions
   let assignedTag = "Deals"; // Default
@@ -286,7 +288,7 @@ const convertDealToCoupon = (deal, isExpired = false) => {
     title: deal.dealTitle || "Deal",
     desc: deal.dealDescription || "",
     btnText: hasCode ? "See Code*" : "See Deal*",
-    expiry: deal.expirationDate ? new Date(deal.expirationDate).toLocaleDateString('en-GB') : "No expiry",
+    expiry: hasValidExpiry ? parsedExpiry.toLocaleDateString('en-GB') : null,
     terms: deal.dealDescription || "No terms available",
     category: deal.dealCategory || "DEALS",
     tag: assignedTag, // Assign the calculated tag

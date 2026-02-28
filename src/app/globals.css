@@ -1,19 +1,132 @@
 @import "tailwindcss";
 
-/*  */
-body{
-  background-color: #f4f4f4;
+:root {
+  --brand-primary: #066fdf;
+  --brand-secondary: #10ac84;
+  --brand-tertiary: #f1f2f6;
+}
+
+body {
+  background-color: var(--brand-tertiary);
+}
+
+/* Theme remap: replace legacy orange/amber/yellow/blue accents with brand colors */
+.text-orange-500,
+.text-orange-600 {
+  color: var(--brand-secondary) !important;
+}
+
+.text-orange-700,
+.text-blue-600,
+.text-blue-700,
+.text-blue-800,
+.text-blue-900 {
+  color: var(--brand-primary) !important;
+}
+
+.bg-orange-500,
+.bg-orange-600,
+.bg-green-600,
+.bg-green-700 {
+  background-color: var(--brand-secondary) !important;
+}
+
+.bg-blue-500,
+.bg-blue-600,
+.bg-blue-700 {
+  background-color: var(--brand-primary) !important;
+}
+
+.border-orange-500,
+.border-blue-500,
+.border-blue-600 {
+  border-color: var(--brand-secondary) !important;
+}
+
+.bg-orange-50,
+.bg-orange-100,
+.bg-amber-50,
+.bg-amber-100,
+.bg-yellow-50,
+.bg-yellow-100 {
+  background-color: var(--brand-tertiary) !important;
+}
+
+.border-orange-100,
+.border-orange-200,
+.border-yellow-100,
+.border-yellow-200 {
+  border-color: #dbe3ee !important;
+}
+
+.text-orange-900,
+.text-yellow-800 {
+  color: #1f2937 !important;
+}
+
+.hover\:text-blue-600:hover,
+.hover\:text-blue-700:hover,
+.hover\:text-blue-800:hover,
+.hover\:text-blue-900:hover,
+.hover\:text-orange-500:hover,
+.hover\:text-orange-600:hover,
+.hover\:text-orange-700:hover {
+  color: var(--brand-primary) !important;
+}
+
+.hover\:bg-orange-50:hover,
+.hover\:bg-orange-100:hover,
+.hover\:bg-yellow-50:hover,
+.hover\:bg-blue-50:hover {
+  background-color: var(--brand-tertiary) !important;
+}
+
+.hover\:bg-orange-600:hover,
+.hover\:bg-orange-700:hover,
+.hover\:bg-green-600:hover,
+.hover\:bg-green-700:hover,
+.hover\:bg-blue-600:hover,
+.hover\:bg-blue-700:hover {
+  background-color: var(--brand-secondary) !important;
+}
+
+.focus\:ring-orange-400:focus,
+.focus\:ring-orange-500:focus,
+.focus\:ring-blue-500:focus {
+  --tw-ring-color: var(--brand-secondary) !important;
+}
+
+.from-orange-50,
+.from-orange-100,
+.via-amber-50,
+.to-orange-200,
+.to-pink-100 {
+  --tw-gradient-from: var(--brand-tertiary) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgba(241, 242, 246, 0) var(--tw-gradient-to-position) !important;
+}
+
+.to-blue-50 {
+  --tw-gradient-to: var(--brand-tertiary) var(--tw-gradient-to-position) !important;
+}
+
+.from-blue-50 {
+  --tw-gradient-from: var(--brand-tertiary) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgba(241, 242, 246, 0) var(--tw-gradient-to-position) !important;
+}
+
+.underline.text-blue-600 {
+  color: var(--brand-primary) !important;
 }
 .swiper-button-prev::after,
 .swiper-button-next::after {
   font-size: 14px !important; /* smaller arrows */
 }
 .swiper-pagination-bullet {
-  background: #000 !important; /* black dots */
+  background: #9aa8bf !important;
   opacity: 0.5;
 }
 .swiper-pagination-bullet-active {
-  background: #f97316 !important; /* orange active dot */
+  background: var(--brand-primary) !important;
   opacity: 1;
 }
 .swiper {

@@ -101,18 +101,18 @@ export default function AuthModal({ isOpen, onClose }) {
         onClick={(event) => event.stopPropagation()}
       >
         <div className="grid md:grid-cols-2">
-          <div className="relative min-h-[220px] md:min-h-[520px] bg-gradient-to-br from-orange-100 via-amber-50 to-orange-200 p-6 md:p-8">
+          <div className="relative min-h-[220px] md:min-h-[520px] bg-gradient-to-br from-[var(--brand-tertiary)] via-[var(--brand-tertiary)] to-[var(--brand-tertiary)] p-6 md:p-8">
             <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute top-10 left-12 h-24 w-24 rounded-full bg-orange-300/40" />
-              <div className="absolute bottom-16 right-10 h-28 w-28 rounded-full bg-amber-300/40" />
-              <div className="absolute top-1/2 left-1/2 h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange-200/30" />
+              <div className="absolute top-10 left-12 h-24 w-24 rounded-full bg-[var(--brand-primary)]/15" />
+              <div className="absolute bottom-16 right-10 h-28 w-28 rounded-full bg-[var(--brand-secondary)]/20" />
+              <div className="absolute top-1/2 left-1/2 h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--brand-primary)]/10" />
             </div>
 
             <div className="relative z-10 flex w-full flex-col">
-              <h3 className="text-2xl md:text-3xl font-bold text-orange-700 leading-tight">
+              <h3 className="text-2xl md:text-3xl font-bold text-[var(--brand-primary)] leading-tight">
                 Save more with every coupon.
               </h3>
-              <p className="mt-3 text-sm text-orange-900/80">
+              <p className="mt-3 text-sm text-slate-700/80">
                 Login or create your account to unlock personalized deals.
               </p>
               <div className="mt-4 md:mt-auto">
@@ -144,7 +144,7 @@ export default function AuthModal({ isOpen, onClose }) {
                     type="text"
                     placeholder="Full name"
                     required
-                    className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--brand-secondary)]"
                   />
                   <input
                     name="phone"
@@ -152,7 +152,7 @@ export default function AuthModal({ isOpen, onClose }) {
                     onChange={onChange}
                     type="tel"
                     placeholder="Phone (optional)"
-                    className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--brand-secondary)]"
                   />
                 </>
               )}
@@ -164,7 +164,7 @@ export default function AuthModal({ isOpen, onClose }) {
                 type="email"
                 placeholder="Email"
                 required
-                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--brand-secondary)]"
               />
               <input
                 name="password"
@@ -173,7 +173,7 @@ export default function AuthModal({ isOpen, onClose }) {
                 type="password"
                 placeholder="Password"
                 required
-                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--brand-secondary)]"
               />
 
               {error ? <p className="text-sm text-red-600">{error}</p> : null}
@@ -182,7 +182,7 @@ export default function AuthModal({ isOpen, onClose }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-orange-600 text-white rounded-lg py-2.5 font-medium hover:bg-orange-700 disabled:opacity-70"
+                className="w-full bg-[var(--brand-secondary)] text-white rounded-lg py-2.5 font-medium hover:bg-[#0e9674] disabled:opacity-70"
               >
                 {loading ? "Please wait..." : isSignup ? "Sign up" : "Login"}
               </button>
@@ -197,7 +197,7 @@ export default function AuthModal({ isOpen, onClose }) {
                   setError("");
                   setMessage("");
                 }}
-                className="text-orange-600 hover:underline"
+                className="text-[var(--brand-primary)] hover:underline"
               >
                 {isSignup ? "Login" : "Sign up"}
               </button>

@@ -117,7 +117,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="fixed top-0 left-0 w-full z-[9999] bg-white shadow-sm">
+    <header className="fixed top-0 left-0 w-full z-[9999] bg-[var(--brand-primary)] text-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         {/* ================= TOP ROW ================= */}
         <div className="flex items-center justify-between py-4 gap-3">
@@ -128,7 +128,7 @@ export default function Header() {
 
           {/* Search (VISIBLE ON ALL SCREENS) */}
           <div ref={searchRef} className="flex flex-1 max-w-xl relative">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
             <input
               type="text"
               placeholder="Search Store"
@@ -139,8 +139,8 @@ export default function Header() {
               }}
               onFocus={() => setShowStoreResults(true)}
               onKeyDown={handleSearchKeyDown}
-              className="w-full bg-gray-100 pl-10 pr-4 py-2.5 rounded-full text-sm
-              focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="w-full bg-white/95 text-gray-700 pl-10 pr-4 py-2.5 rounded-full text-sm
+              focus:outline-none focus:ring-2 focus:ring-[var(--brand-secondary)]"
             />
             {showStoreResults && storeQuery.trim() ? (
               <div className="absolute left-0 right-0 top-[110%] bg-white border border-gray-200 rounded-xl shadow-lg z-[11000] max-h-72 overflow-y-auto">
@@ -169,7 +169,7 @@ export default function Header() {
               <div className="relative">
                 <button
                   onClick={() => setAdminOpen(!adminOpen)}
-                  className="flex items-center gap-1 font-medium text-gray-700 hover:text-blue-600"
+                  className="flex items-center gap-1 font-medium text-white/90 hover:text-[var(--brand-secondary)]"
                 >
                   <MdAdminPanelSettings className="text-lg" />
                   Admin
@@ -183,7 +183,7 @@ export default function Header() {
                         key={item.href}
                         href={item.href}
                         onClick={() => setAdminOpen(false)}
-                        className="block px-4 py-2 text-sm hover:bg-gray-100"
+                        className="block px-4 py-2 text-sm text-slate-700 hover:bg-gray-100"
                       >
                         {item.name}
                       </Link>
@@ -199,14 +199,14 @@ export default function Header() {
                 <button
                   type="button"
                   onClick={() => router.push("/profile")}
-                  className="text-sm font-medium text-gray-700 hover:text-blue-600"
+                  className="text-sm font-medium text-white/90 hover:text-[var(--brand-secondary)]"
                 >
                   {currentUser?.fullName}
                 </button>
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="text-red-600 font-medium hover:text-red-700"
+                  className="font-medium text-white/85 hover:text-white"
                 >
                   Logout
                 </button>
@@ -215,7 +215,7 @@ export default function Header() {
               <button
                 type="button"
                 onClick={() => setAuthModalOpen(true)}
-                className="flex items-center gap-2 text-blue-600 font-medium hover:text-blue-700"
+                className="flex items-center gap-2 text-white font-medium hover:text-[var(--brand-secondary)]"
               >
                 <FiUser />
                 Login
@@ -226,24 +226,24 @@ export default function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden text-2xl shrink-0"
+            className="md:hidden text-2xl shrink-0 text-white"
           >
             <HiOutlineMenuAlt3 />
           </button>
         </div>
 
         {/* Divider */}
-        <div className="border-t border-gray-200" />
+        <div className="border-t border-white/20" />
 
         {/* ================= BOTTOM ROW (DESKTOP ONLY) ================= */}
         <div className="hidden md:flex items-center justify-between py-3">
           {/* Nav */}
-          <div className="flex gap-10 font-medium text-gray-700">
+          <div className="flex gap-10 font-medium text-white/90">
             {navLinks.map(({ name, href, icon: Icon }) => (
               <Link
                 key={href}
                 href={href}
-                className="flex items-center gap-2 hover:text-blue-600 transition"
+                className="flex items-center gap-2 hover:text-[var(--brand-secondary)] transition"
               >
                 <Icon />
                 <span className="hover:underline">{name}</span>
@@ -256,9 +256,9 @@ export default function Header() {
             <button
               type="button"
               onClick={() => setSubmitModalOpen(true)}
-              className="flex items-center gap-2 text-white bg-blue-600
+              className="flex items-center gap-2 text-white bg-[var(--brand-secondary)]
               px-5 py-2 rounded-full font-medium
-              hover:bg-blue-700 hover:scale-105 transition"
+              hover:bg-[#0e9674] hover:scale-105 transition"
             >
               <IoAddCircleOutline />
               Submit a Coupon
@@ -276,7 +276,7 @@ export default function Header() {
               key={href}
               href={href}
               onClick={() => setMobileOpen(false)}
-              className="block font-medium text-gray-700"
+              className="block font-medium text-[var(--brand-primary)]"
             >
               {name}
             </Link>
@@ -287,7 +287,7 @@ export default function Header() {
             <div>
               <button
                 onClick={() => setAdminOpen(!adminOpen)}
-                className="flex justify-between w-full font-medium"
+                className="flex justify-between w-full font-medium text-[var(--brand-primary)]"
               >
                 Admin
                 <IoChevronDownOutline
@@ -302,7 +302,7 @@ export default function Header() {
                       key={item.href}
                       href={item.href}
                       onClick={() => setMobileOpen(false)}
-                      className="block text-sm text-gray-600"
+                      className="block text-sm text-[var(--brand-primary)]/85"
                     >
                       {item.name}
                     </Link>
@@ -320,14 +320,14 @@ export default function Header() {
                   setMobileOpen(false);
                   router.push("/profile");
                 }}
-                className="block font-medium text-gray-700"
+                className="block font-medium text-[var(--brand-primary)]"
               >
                 My Profile
               </button>
               <button
                 type="button"
                 onClick={handleLogout}
-                className="block font-medium text-red-600"
+                className="block font-medium text-[var(--brand-primary)]"
               >
                 Logout
               </button>
@@ -339,7 +339,7 @@ export default function Header() {
                 setMobileOpen(false);
                 setAuthModalOpen(true);
               }}
-              className="block font-medium text-blue-600"
+              className="block font-medium text-[var(--brand-primary)]"
             >
               Login
             </button>
@@ -352,7 +352,7 @@ export default function Header() {
                 setMobileOpen(false);
                 setSubmitModalOpen(true);
               }}
-              className="flex justify-center items-center gap-2 bg-blue-600 text-white py-2 rounded-full"
+              className="flex justify-center items-center gap-2 bg-[var(--brand-secondary)] text-white py-2 rounded-full"
             >
               <IoAddCircleOutline />
               Submit a Coupon

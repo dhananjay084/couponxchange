@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchDeals } from "@/features/deal/dealSlice";
 import { fetchStores } from "@/api/storeApi";
 import { fetchCategories } from "@/api/categoryApi";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiChevronDown, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import ImageSlider from "@/components/slider/slider";
 import CouponCard from "@/components/cards/couponcard";
 import StoreCard from "@/components/cards/storecard";
@@ -53,6 +53,7 @@ export default function Home() {
     status: "idle",
   });
   const [homepageConfig, setHomepageConfig] = useState(DEFAULT_HOMEPAGE_CONFIG);
+  const [openFaqIndex, setOpenFaqIndex] = useState(0);
 
   useEffect(() => {
     dispatch(fetchDeals());
@@ -329,7 +330,7 @@ export default function Home() {
           description="Explore the top categories loved by our users"
           retailers={homePageCategories.map((cat) => ({
             name: cat.categoryName,
-            url: "#",
+            url: `/category/${cat?._id}`,
           }))}
         />
       ) : (
@@ -357,17 +358,56 @@ export default function Home() {
       </div>
 
       {homepageConfig?.faqSection?.items?.length > 0 ? (
-        <div className="max-w-5xl mx-auto px-4 py-12">
-          <h2 className="text-3xl font-bold mb-6">{homepageConfig.faqSection.title || "FAQs"}</h2>
-          <div className="space-y-4">
-            {homepageConfig.faqSection.items.map((faq, index) => (
-              <div key={index} className="border rounded-lg p-4 bg-white">
-                <h3 className="font-semibold text-lg text-gray-900">{faq.question}</h3>
-                <p className="mt-2 text-gray-700">{faq.answer}</p>
-              </div>
-            ))}
+        <section className="max-w-5xl mx-auto px-4 py-14">
+          <div className="mb-8 text-center">
+           
+            <h2 className="mt-3 text-3xl font-bold text-gray-900">
+              {homepageConfig.faqSection.title || "FAQs"}
+            </h2>
           </div>
-        </div>
+
+          <div className="space-y-3">
+            {homepageConfig.faqSection.items.map((faq, index) => {
+              const isOpen = openFaqIndex === index;
+              return (
+                <div
+                  key={index}
+                  className="rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-200"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaqIndex(isOpen ? -1 : index)}
+                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                    aria-expanded={isOpen}
+                  >
+                    <span className="text-base md:text-lg font-semibold text-gray-900">
+                      {faq.question}
+                    </span>
+                    <span
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all ${
+                        isOpen
+                          ? "bg-[var(--brand-primary)] text-white rotate-180"
+                          : "bg-[var(--brand-tertiary)] text-[var(--brand-primary)]"
+                      }`}
+                    >
+                      <FiChevronDown />
+                    </span>
+                  </button>
+
+                  <div
+                    className={`grid transition-all duration-300 ease-in-out ${
+                      isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <p className="px-5 pb-5 text-gray-700">{faq.answer}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
       ) : null}
     </div>
   );
