@@ -2,8 +2,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBlogs } from "../../api/blogApi";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import BlogCard from "@/components/cards/blogcard";
 
 export default function BlogsPage() {
   const [visibleCount, setVisibleCount] = useState(9);
@@ -49,21 +49,6 @@ export default function BlogsPage() {
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
     setVisibleCount(9);
-  };
-
-  // Format date helper
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      });
-    } catch (error) {
-      return dateString;
-    }
   };
 
   // Get blog image helper
@@ -258,55 +243,18 @@ export default function BlogsPage() {
       {/* Blogs Grid */}
       {visibleBlogs.length > 0 ? (
         <>
-          <section className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {visibleBlogs.map((blog) => (
-              <Link
+              <BlogCard
                 key={blog._id || blog.id}
-                href={`/blogs/${blog.slug || blog._id}`}
-                className="block"
-                prefetch={true}
-              >
-                <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition transform hover:-translate-y-1 flex flex-col h-full">
-                  {/* Blog Image */}
-                  <div className="relative w-full h-48">
-                    <img
-                      src={getBlogImage(blog)}
-                      alt={blog.title}
-                      className="w-full h-full object-cover transition-transform "
-                    />
-                    <span className="absolute top-3 left-3 bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-md">
-                      {getCategoryName(blog.category)}
-                    </span>
-                    {blog.isFeatured && (
-                      <span className="absolute top-3 right-3 bg-yellow-500 text-white text-xs px-3 py-1 rounded-full shadow-md">
-                        Featured
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Blog Content */}
-                  <div className="flex flex-col flex-1 p-5">
-                    <h2 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
-                      {blog.title}
-                    </h2>
-                    <p className="text-sm text-gray-600 flex-1 line-clamp-3">
-                      {blog.excerpt || 
-                        (blog.content 
-                          ? blog.content.replace(/<[^>]*>/g, '').substring(0, 150) + '...'
-                          : 'No content available')
-                      }
-                    </p>
-
-                    {/* Author + Date */}
-                    <div className="mt-5 space-y-2">
-                      <div className="flex items-center justify-between text-xs text-gray-500">
-                        <span>By {blog.author || 'Anonymous'}</span>
-                        <span>{formatDate(blog.publishDate || blog.createdAt)}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Link>
+                image={getBlogImage(blog)}
+                title={blog.title}
+                description={
+                  blog.excerpt ||
+                  blog.content?.replace(/<[^>]*>/g, "").substring(0, 100) + "..."
+                }
+                slug={blog.slug || blog._id}
+              />
             ))}
           </section>
 
