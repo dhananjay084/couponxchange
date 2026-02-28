@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/navigation'
 import { fetchStores } from '@/api/storeApi'
-import { LiaStoreSolid } from 'react-icons/lia'
+import { fetchDeals } from '@/features/deal/dealSlice'
 import { HiChevronRight } from 'react-icons/hi'
 
 const alphabets = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '0-9']
@@ -14,13 +14,25 @@ const Page = () => {
   const router = useRouter()
 
   const { stores = [], status, error } = useSelector((state) => state.stores)
+  const { deals = [] } = useSelector((state) => state.deals || {})
 
   // Refs for scrolling
   const sectionRefs = useRef({})
 
   useEffect(() => {
     dispatch(fetchStores())
+    dispatch(fetchDeals())
   }, [dispatch])
+
+  const offersByStore = useMemo(() => {
+    const countMap = {};
+    deals.forEach((deal) => {
+      const key = String(deal?.dealStore || "").trim().toLowerCase();
+      if (!key) return;
+      countMap[key] = (countMap[key] || 0) + 1;
+    });
+    return countMap;
+  }, [deals]);
 
   // Group stores alphabetically
   const groupedStores = useMemo(() => {
@@ -36,7 +48,10 @@ const Page = () => {
       groups[key].push({
         id: store._id,
         name,
-        offers: store.totalOffers || 0,
+        offers:
+          offersByStore[String(name).trim().toLowerCase()] ||
+          store.totalOffers ||
+          0,
       })
     })
 
@@ -45,7 +60,7 @@ const Page = () => {
     })
 
     return groups
-  }, [stores])
+  }, [stores, offersByStore])
 
   const handleAlphabetClick = (letter) => {
     sectionRefs.current[letter]?.scrollIntoView({

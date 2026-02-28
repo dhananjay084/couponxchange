@@ -1,11 +1,15 @@
 import axios from "axios";
+import { getStoredToken } from "@/utils/session";
 
 const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/deals`;
 
 
 // Create deal
 export const createDeal = async (dealData) => {
-  const response = await axios.post(API_URL, dealData);
+  const token = getStoredToken();
+  const response = await axios.post(API_URL, dealData, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
   return response.data;
 };
 
@@ -23,12 +27,18 @@ export const getDealById = async (id) => {
 
 // Update deal
 export const updateDeal = async (id, dealData) => {
-  const response = await axios.put(`${API_URL}/${id}`, dealData);
+  const token = getStoredToken();
+  const response = await axios.put(`${API_URL}/${id}`, dealData, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
   return response.data;
 };
 
 // Delete deal
 export const deleteDeal = async (id) => {
-  const response = await axios.delete(`${API_URL}/${id}`);
+  const token = getStoredToken();
+  const response = await axios.delete(`${API_URL}/${id}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
   return response.data;
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
@@ -20,7 +21,17 @@ const images = [
   "https://www.shutterstock.com/image-vector/flash-sale-promotion-banner-25-600nw-2159885029.jpg",
 ];
 
-export default function ImageSlider() {
+export default function ImageSlider({ slides = [] }) {
+  const normalizedSlides =
+    slides.length > 0
+      ? slides
+      : images.map((img, index) => ({
+          id: `default-${index}`,
+          image: img,
+          title: `Slide ${index + 1}`,
+          redirectUrl: "#",
+        }));
+
   return (
     <div className="w-full mx-auto py-8 relative overflow-visible">
       <Swiper
@@ -43,13 +54,15 @@ export default function ImageSlider() {
         }}
         className="overflow-visible" // 👈 allow arrows outside
       >
-        {images.map((img, index) => (
-          <SwiperSlide key={index}>
-            <img
-              src={img}
-              alt={`Slide ${index}`}
-              className="w-full h-64 object-cover rounded-xl shadow-md"
-            />
+        {normalizedSlides.map((slide, index) => (
+          <SwiperSlide key={slide.id || index}>
+            <Link href={slide.redirectUrl || "#"} className="block">
+              <img
+                src={slide.image}
+                alt={slide.title || `Slide ${index + 1}`}
+                className="w-full h-64 object-cover rounded-xl shadow-md"
+              />
+            </Link>
           </SwiperSlide>
         ))}
       </Swiper>

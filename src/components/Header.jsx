@@ -1,229 +1,367 @@
-'use client';
+"use client";
+import { useState } from "react";
+import { useEffect } from "react";
+import { useMemo } from "react";
+import { useRef } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
 
-import { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-// import Logo from '../assets/full-logo.png';
-import Logo from '../../public/Logo.gif';
+import { FiSearch, FiUser } from "react-icons/fi";
+import { HiOutlineMenuAlt3 } from "react-icons/hi";
+import { HiOutlineBuildingStorefront } from "react-icons/hi2";
+import { BiCategoryAlt } from "react-icons/bi";
+import { FaRegNewspaper } from "react-icons/fa6";
+import { IoAddCircleOutline, IoChevronDownOutline } from "react-icons/io5";
+import { MdAdminPanelSettings } from "react-icons/md";
+import AuthModal from "./AuthModal";
+import SubmitCouponModal from "./SubmitCouponModal";
+import { clearSession, getStoredToken, getStoredUser } from "@/utils/session";
+import { logoutUser } from "@/api/authApi";
+import { fetchStores } from "@/api/storeApi";
 
-import { HiOutlineMenuAlt3 } from 'react-icons/hi';
-import { FiSearch } from 'react-icons/fi';
-import { IoChevronDownOutline } from 'react-icons/io5';
-
+import Logo from "../../public/Logo.gif";
 
 export default function Header() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(false);
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { stores = [], status: storesStatus } = useSelector((state) => state.stores || {});
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [submitModalOpen, setSubmitModalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [storeQuery, setStoreQuery] = useState("");
+  const [showStoreResults, setShowStoreResults] = useState(false);
+  const searchRef = useRef(null);
+
+  useEffect(() => {
+    const syncAuthState = () => {
+      setCurrentUser(getStoredUser());
+    };
+    syncAuthState();
+    window.addEventListener("auth-state-changed", syncAuthState);
+    return () => window.removeEventListener("auth-state-changed", syncAuthState);
+  }, [authModalOpen, submitModalOpen]);
+
+  useEffect(() => {
+    if (storesStatus === "idle" || (storesStatus !== "loading" && stores.length === 0)) {
+      dispatch(fetchStores());
+    }
+  }, [dispatch, storesStatus, stores.length]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowStoreResults(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filteredStores = useMemo(() => {
+    const query = storeQuery.trim().toLowerCase();
+    if (!query) return [];
+    return stores
+      .filter((store) => String(store.storeName || "").toLowerCase().includes(query))
+      .slice(0, 8);
+  }, [stores, storeQuery]);
+
+  const handleStoreSelect = (storeId) => {
+    setStoreQuery("");
+    setShowStoreResults(false);
+    router.push(`/store/${storeId}`);
+  };
+
+  const handleSearchKeyDown = (event) => {
+    if (event.key === "Enter" && filteredStores.length > 0) {
+      event.preventDefault();
+      handleStoreSelect(filteredStores[0]._id);
+    }
+  };
+
+  const isLoggedIn = Boolean(currentUser?.id);
+  const isAdmin = currentUser?.role === "admin";
+
+  const handleLogout = async () => {
+    try {
+      const token = getStoredToken();
+      if (token) {
+        await logoutUser(token);
+      }
+    } catch {
+      // ignore API errors for client logout
+    } finally {
+      clearSession();
+      setCurrentUser(null);
+      setMobileOpen(false);
+      setAdminOpen(false);
+      window.dispatchEvent(new Event("auth-state-changed"));
+    }
+  };
 
   const navLinks = [
-    { name: 'Stores', href: '/stores' },
-    { name: 'Categories', href: '/category' },
-    { name: 'Blog', href: '/blogs' },
-    // { name: 'Deals', href: '/deals/:id' },
-    { name: 'Category', href: '/category/:id' },
+    { name: "Stores", href: "/stores", icon: HiOutlineBuildingStorefront },
+    { name: "Categories", href: "/category", icon: BiCategoryAlt },
+    { name: "Blog", href: "/blogs", icon: FaRegNewspaper },
   ];
 
   const adminLinks = [
-    { name: 'Add Deals', href: '/admin/deals' },
-    { name: 'Add Store', href: '/admin/store' },
-    { name: 'Add Category', href: '/admin/category' },
-    { name: 'Add Blogs', href: '/admin/blog' },
-
-
+    { name: "Homepage Info", href: "/admin/homepage" },
+    { name: "Add Deals", href: "/admin/deals" },
+    { name: "Add Store", href: "/admin/store" },
+    { name: "Add Category", href: "/admin/category" },
+    { name: "Add Blogs", href: "/admin/blog" },
   ];
 
   return (
-    <>
-      {/* HEADER */}
-      <header className="fixed top-0 left-0 w-full z-[100] bg-[#fff] border-b border-white/10 shadow-md">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-          {/* Left: Logo + Nav */}
-          <div className="flex items-center gap-10">
-            <Link href="/">
-              <Image src={Logo} alt="Logo" width={140} height={50} />
-            </Link>
+    <header className="fixed top-0 left-0 w-full z-[9999] bg-white shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
+        {/* ================= TOP ROW ================= */}
+        <div className="flex items-center justify-between py-4 gap-3">
+          {/* Logo */}
+          <Link href="/" className="shrink-0">
+            <Image src={Logo} alt="Logo" width={130} height={40} />
+          </Link>
 
-            {/* DESKTOP NAV */}
-            <nav className="hidden md:flex items-center gap-6 relative">
-              {navLinks.map((link, index) => (
-                <Link key={index} href={link.href}>
-                  <span className="relative text-sm font-medium tracking-wide cursor-pointer text-black group">
-                    {link.name}
-                    <span className="absolute left-0 -bottom-1 h-[2px] w-0 transition-all duration-300 group-hover:w-full bg-white"></span>
-                  </span>
-                </Link>
-              ))}
+          {/* Search (VISIBLE ON ALL SCREENS) */}
+          <div ref={searchRef} className="flex flex-1 max-w-xl relative">
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search Store"
+              value={storeQuery}
+              onChange={(e) => {
+                setStoreQuery(e.target.value);
+                setShowStoreResults(true);
+              }}
+              onFocus={() => setShowStoreResults(true)}
+              onKeyDown={handleSearchKeyDown}
+              className="w-full bg-gray-100 pl-10 pr-4 py-2.5 rounded-full text-sm
+              focus:outline-none focus:ring-2 focus:ring-orange-400"
+            />
+            {showStoreResults && storeQuery.trim() ? (
+              <div className="absolute left-0 right-0 top-[110%] bg-white border border-gray-200 rounded-xl shadow-lg z-[11000] max-h-72 overflow-y-auto">
+                {filteredStores.length > 0 ? (
+                  filteredStores.map((store) => (
+                    <button
+                      key={store._id}
+                      type="button"
+                      onClick={() => handleStoreSelect(store._id)}
+                      className="w-full text-left px-4 py-2.5 hover:bg-gray-100 text-sm"
+                    >
+                      {store.storeName}
+                    </button>
+                  ))
+                ) : (
+                  <p className="px-4 py-3 text-sm text-gray-500">No store found</p>
+                )}
+              </div>
+            ) : null}
+          </div>
 
-              {/* ADMIN DROPDOWN */}
+          {/* Desktop Right Actions */}
+          <div className="hidden md:flex items-center gap-6">
+            {/* Admin dropdown */}
+            {isAdmin ? (
               <div className="relative">
                 <button
-                  onClick={() => setIsAdminDropdownOpen(!isAdminDropdownOpen)}
-                  className="flex items-center gap-1 text-sm font-medium text-black hover:text-gray-200"
+                  onClick={() => setAdminOpen(!adminOpen)}
+                  className="flex items-center gap-1 font-medium text-gray-700 hover:text-blue-600"
                 >
-                  Admin <IoChevronDownOutline className="mt-[1px]" />
+                  <MdAdminPanelSettings className="text-lg" />
+                  Admin
+                  <IoChevronDownOutline />
                 </button>
 
-                {isAdminDropdownOpen && (
-                  <div className="absolute top-8 left-0 bg-white text-black rounded-md shadow-lg w-40 z-50 overflow-hidden">
-                    {adminLinks.map((link, idx) => (
+                {adminOpen && (
+                  <div className="absolute right-0 mt-3 w-44 bg-white border rounded-lg shadow-lg overflow-hidden z-[10000]">
+                    {adminLinks.map((item) => (
                       <Link
-                        key={idx}
-                        href={link.href}
-                        onClick={() => setIsAdminDropdownOpen(false)}
-                        className="block px-4 py-2 hover:bg-gray-100"
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setAdminOpen(false)}
+                        className="block px-4 py-2 text-sm hover:bg-gray-100"
                       >
-                        {link.name}
+                        {item.name}
                       </Link>
                     ))}
                   </div>
                 )}
               </div>
-            </nav>
-          </div>
+            ) : null}
 
-          {/* Right: Search + Buttons */}
-          <div className="hidden md:flex items-center gap-4 flex-1 justify-end">
-          <div className="relative w-64">
-  <input
-    type="text"
-    placeholder="Search store"
-    className="w-full bg-white border border-gray-300 text-gray-800 text-sm pl-10 pr-4 py-2 rounded-full placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
-  />
-  <FiSearch className="absolute top-2.5 left-3 text-lg text-gray-500" />
-</div>
-
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="cursor-pointer bg-gradient-to-r from-orange-500 to-pink-500  px-5 py-2 rounded-full font-medium hover:scale-105 transition-transform duration-300"
-            >
-              Submit Coupon
-            </button>
-            <Link href="/login">
-              <button className="cursor-pointer bg-gradient-to-r from-orange-500 to-pink-500  px-5 py-2 rounded-full font-medium hover:scale-105 transition-transform duration-300">
-                Login / Sign Up
+            {/* Login */}
+            {isLoggedIn ? (
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => router.push("/profile")}
+                  className="text-sm font-medium text-gray-700 hover:text-blue-600"
+                >
+                  {currentUser?.fullName}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="text-red-600 font-medium hover:text-red-700"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setAuthModalOpen(true)}
+                className="flex items-center gap-2 text-blue-600 font-medium hover:text-blue-700"
+              >
+                <FiUser />
+                Login
               </button>
-            </Link>
+            )}
           </div>
 
-          {/* Mobile Hamburger */}
-          <div className="md:hidden">
+          {/* Mobile Menu Button */}
           <button
-  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-  className="text-2xl text-gray-800"
->
-  <HiOutlineMenuAlt3 />
-</button>
-
-          </div>
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="md:hidden text-2xl shrink-0"
+          >
+            <HiOutlineMenuAlt3 />
+          </button>
         </div>
 
-        {/* MOBILE MENU */}
-        {isMobileMenuOpen && (
-         <div className="md:hidden w-full px-6 pb-6 bg-white border-t border-gray-200 shadow-lg">
+        {/* Divider */}
+        <div className="border-t border-gray-200" />
 
-            <div className="flex flex-col gap-4 mt-4">
-              {navLinks.map((link, index) => (
-             <Link
-             key={index}
-             href={link.href}
-             className="text-sm font-medium text-gray-800"
-             onClick={() => setIsMobileMenuOpen(false)}
-           >
-             {link.name}
-           </Link>
-           
-              ))}
-
-              {/* ADMIN DROPDOWN MOBILE */}
-              <div>
-                <button
-                  onClick={() => setIsAdminDropdownOpen(!isAdminDropdownOpen)}
-                  className="flex items-center justify-between text-sm font-medium  w-full"
-                >
-                  Admin
-                  <IoChevronDownOutline
-                    className={`transition-transform ${isAdminDropdownOpen ? 'rotate-180' : ''}`}
-                  />
-                </button>
-                {isAdminDropdownOpen && (
-                  <div className="mt-2 flex flex-col gap-2 pl-4">
-                    {adminLinks.map((link, idx) => (
-                  <Link
-                  key={idx}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-sm text-gray-600 hover:text-gray-800"
-                >
-                  {link.name}
-                </Link>
-                
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <div className="relative">
-              <input
-  type="text"
-  placeholder="Search store"
-  className="w-full bg-white border border-gray-300 text-gray-800 text-sm pl-10 pr-4 py-2 rounded-full placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
-/>
-<FiSearch className="absolute top-2.5 left-3 text-lg text-gray-500" />
-
-              </div>
-
-              <button
-                onClick={() => {
-                  setIsModalOpen(true);
-                  setIsMobileMenuOpen(false);
-                }}
-                className="w-full bg-gradient-to-r from-orange-500 to-pink-500  px-4 py-2 rounded-full font-medium hover:scale-105 transition-transform duration-300"
+        {/* ================= BOTTOM ROW (DESKTOP ONLY) ================= */}
+        <div className="hidden md:flex items-center justify-between py-3">
+          {/* Nav */}
+          <div className="flex gap-10 font-medium text-gray-700">
+            {navLinks.map(({ name, href, icon: Icon }) => (
+              <Link
+                key={href}
+                href={href}
+                className="flex items-center gap-2 hover:text-blue-600 transition"
               >
-                Submit Coupon
-              </button>
-            </div>
+                <Icon />
+                <span className="hover:underline">{name}</span>
+              </Link>
+            ))}
           </div>
-        )}
-      </header>
 
-      {/* MODAL */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm flex items-center justify-center px-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 relative animate-fade-in">
+          {/* Submit */}
+          {isLoggedIn ? (
             <button
-              className="absolute top-3 right-4 text-2xl text-gray-400 hover:text-black"
-              onClick={() => setIsModalOpen(false)}
+              type="button"
+              onClick={() => setSubmitModalOpen(true)}
+              className="flex items-center gap-2 text-white bg-blue-600
+              px-5 py-2 rounded-full font-medium
+              hover:bg-blue-700 hover:scale-105 transition"
             >
-              ×
+              <IoAddCircleOutline />
+              Submit a Coupon
             </button>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6">Submit a Coupon</h2>
-            <form className="space-y-5">
-              <input
-                type="text"
-                placeholder="Store name"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
-              />
-              <input
-                type="text"
-                placeholder="Coupon code"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
-              />
-              <textarea
-                placeholder="Description (optional)"
-                rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
-              />
+          ) : null}
+        </div>
+      </div>
+
+      {/* ================= MOBILE MENU ================= */}
+      {mobileOpen && (
+        <div className="md:hidden bg-white border-t shadow-xl px-6 py-4 space-y-4 z-[9999]">
+          {/* Nav Links */}
+          {navLinks.map(({ name, href }) => (
+            <Link
+              key={href}
+              href={href}
+              onClick={() => setMobileOpen(false)}
+              className="block font-medium text-gray-700"
+            >
+              {name}
+            </Link>
+          ))}
+
+          {/* Admin */}
+          {isAdmin ? (
+            <div>
               <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:to-orange-600  font-semibold py-3 px-4 rounded-lg transition duration-300"
+                onClick={() => setAdminOpen(!adminOpen)}
+                className="flex justify-between w-full font-medium"
               >
-                Submit Coupon
+                Admin
+                <IoChevronDownOutline
+                  className={`transition ${adminOpen ? "rotate-180" : ""}`}
+                />
               </button>
-            </form>
-          </div>
+
+              {adminOpen && (
+                <div className="pl-4 mt-2 space-y-2">
+                  {adminLinks.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileOpen(false)}
+                      className="block text-sm text-gray-600"
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : null}
+
+          {isLoggedIn ? (
+            <>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileOpen(false);
+                  router.push("/profile");
+                }}
+                className="block font-medium text-gray-700"
+              >
+                My Profile
+              </button>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="block font-medium text-red-600"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                setMobileOpen(false);
+                setAuthModalOpen(true);
+              }}
+              className="block font-medium text-blue-600"
+            >
+              Login
+            </button>
+          )}
+
+          {isLoggedIn ? (
+            <button
+              type="button"
+              onClick={() => {
+                setMobileOpen(false);
+                setSubmitModalOpen(true);
+              }}
+              className="flex justify-center items-center gap-2 bg-blue-600 text-white py-2 rounded-full"
+            >
+              <IoAddCircleOutline />
+              Submit a Coupon
+            </button>
+          ) : null}
         </div>
       )}
-    </>
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+      <SubmitCouponModal isOpen={submitModalOpen} onClose={() => setSubmitModalOpen(false)} />
+    </header>
   );
 }

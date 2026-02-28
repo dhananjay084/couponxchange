@@ -14,7 +14,6 @@ export default function CouponCard({
   code,
   expiration,
   redirectLink,
-  showCoupon,
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -25,35 +24,33 @@ export default function CouponCard({
 
   const handleGoToShop = () => {
     if (redirectLink) {
-      window.open(redirectLink, "_blank");
-    } else {
-      alert("Shop link not available");
+      window.open(redirectLink, "_blank", "noopener,noreferrer");
+    }
+  };
+
+  const handleCardClick = () => {
+    // If NO coupon code → redirect on card click
+    if (!code && redirectLink) {
+      handleGoToShop();
     }
   };
 
   return (
     <>
-      {/* Coupon Card    //  max-w-[320px]*/}
-    
-
+      {/* Coupon Card */}
       <div
-        className="
-          w-full
-          bg-white rounded-md shadow-md overflow-hidden
-          flex flex-col
+        onClick={handleCardClick}
+        className={`
+          w-full bg-white rounded-md shadow-md overflow-hidden
+          flex flex-col relative h-[350px]
           transition duration-300 ease-in-out
           hover:shadow-xl hover:-translate-y-2
-          h-[350px]
-          relative
-        "
+          ${!code ? "cursor-pointer" : ""}
+        `}
       >
         {/* Image Section */}
         <div className="relative w-full">
-          <img
-            src={image}
-            alt={brand}
-            className="w-full h-40 object-cover"
-          />
+          <img src={image} alt={brand} className="w-full h-40 object-cover" />
 
           {exclusive && (
             <div className="absolute top-2 right-2 bg-black text-white px-2 py-1 text-xs font-bold rounded shadow">
@@ -62,43 +59,45 @@ export default function CouponCard({
           )}
 
           <div className="absolute bottom-2 left-2 bg-white p-1 rounded shadow">
-            <img
-              src={logo}
-              alt={`${brand} logo`}
-              className="w-8 h-8 object-contain"
-            />
+            <img src={logo} alt={`${brand} logo`} className="w-8 h-8 object-contain" />
           </div>
         </div>
 
-        {/* Content Section */}
+        {/* Content */}
         <div className="p-4 pb-10 flex flex-col flex-grow">
           <div className="flex justify-between items-start mb-2">
-            {showCoupon && (
+            {/* Code / Deal */}
+            {code ? (
               <p
-                onClick={() => setIsModalOpen(true)}
+                onClick={(e) => {
+                  e.stopPropagation(); // ⛔ stop card redirect
+                  setIsModalOpen(true);
+                }}
                 className="cursor-pointer text-orange-500 font-semibold"
               >
                 Code
               </p>
+            ) : (
+              <p className="text-green-600 font-semibold">Deal</p>
             )}
+
             <p className="text-sm text-gray-500">{brand}</p>
           </div>
 
           <h3 className="font-bold text-lg">{discount}</h3>
 
-          <p className="text-sm mt-1 mb-2 line-clamp-2">
-            {description}
-          </p>
+          <p className="text-sm mt-1 mb-2 line-clamp-2">{description}</p>
         </div>
 
-        {/* Expiry Date */}
+        {/* Expiry */}
         <p className="absolute bottom-3 left-4 text-xs text-gray-400">
           Expires: {expiration}
         </p>
       </div>
 
-      {/* Modal */}
+      {/* Modal (only when code exists) */}
       {isModalOpen &&
+        code &&
         ReactDOM.createPortal(
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
             <div className="bg-white rounded-xl shadow-lg p-6 max-w-md w-full relative">
@@ -110,20 +109,14 @@ export default function CouponCard({
               </button>
 
               <div className="flex items-center gap-2 mb-4">
-                <img
-                  src={logo}
-                  alt={`${brand} logo`}
-                  className="w-10 h-10 object-contain"
-                />
+                <img src={logo} alt={brand} className="w-10 h-10 object-contain" />
                 <h2 className="font-bold text-lg">{brand}</h2>
               </div>
 
               <p className="mb-4">{description}</p>
 
               <div className="flex items-center border border-dashed border-orange-500 rounded-md overflow-hidden">
-                <span className="flex-1 text-center py-2 font-bold">
-                  {code}
-                </span>
+                <span className="flex-1 text-center py-2 font-bold">{code}</span>
                 <button
                   className="bg-orange-500 text-white px-4 py-2 hover:bg-orange-600 transition"
                   onClick={handleCopy}

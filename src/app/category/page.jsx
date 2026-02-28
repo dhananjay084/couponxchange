@@ -2,18 +2,27 @@
 
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 import Banner from "@/components/banner/banner";
 import StoreCard from "@/components/cards/categorycard";
 import { fetchCategories } from "@/api/categoryApi";
+import { fetchDeals } from "@/features/deal/dealSlice";
+import { getHomepageConfig } from "@/api/homepageApi";
 import { HiChevronRight } from 'react-icons/hi'
 
 const alphabets = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '0-9']
 
 const Category = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { categories = [], status, error } = useSelector(
     (state) => state.categories
   );
+  const { deals = [] } = useSelector((state) => state.deals || {});
+  const [categoryBanner, setCategoryBanner] = useState({
+    imageUrl: "https://picsum.photos/1200/400?random=1",
+    redirectUrl: "",
+  });
 
   // All hooks must be called unconditionally at the top level
   const sectionRefs = useRef({})
@@ -21,7 +30,41 @@ const Category = () => {
 
   useEffect(() => {
     dispatch(fetchCategories());
+    dispatch(fetchDeals());
   }, [dispatch]);
+
+  useEffect(() => {
+    const loadConfig = async () => {
+      try {
+        const response = await getHomepageConfig();
+        if (response?.data?.categoryPageBanner?.imageUrl) {
+          setCategoryBanner({
+            imageUrl: response.data.categoryPageBanner.imageUrl,
+            redirectUrl: response.data.categoryPageBanner.redirectUrl || "",
+          });
+        }
+      } catch {
+        // keep default banner
+      }
+    };
+    loadConfig();
+  }, []);
+
+  const categoryCounts = useMemo(() => {
+    const countMap = {};
+    deals.forEach((deal) => {
+      const key = String(deal?.dealCategory || "").trim().toLowerCase();
+      if (!key) return;
+      if (!countMap[key]) {
+        countMap[key] = { offers: 0, coupons: 0 };
+      }
+      countMap[key].offers += 1;
+      if (String(deal?.dealCode || "").trim()) {
+        countMap[key].coupons += 1;
+      }
+    });
+    return countMap;
+  }, [deals]);
 
   // ✅ Group categories alphabetically - must be before conditional returns
   const groupedCategories = useMemo(() => {
@@ -37,8 +80,14 @@ const Category = () => {
       groups[key].push({
         id: category._id,
         name,
-        coupons: category.couponsCount || 0,
-        offers: category.offersCount || 0,
+        coupons:
+          categoryCounts[String(name).trim().toLowerCase()]?.coupons ||
+          category.couponsCount ||
+          0,
+        offers:
+          categoryCounts[String(name).trim().toLowerCase()]?.offers ||
+          category.offersCount ||
+          0,
       })
     })
 
@@ -47,7 +96,7 @@ const Category = () => {
     })
 
     return groups
-  }, [categories])
+  }, [categories, categoryCounts])
 
   // ✅ Popular Categories (Featured) - must be before conditional returns
   const popularCategories = useMemo(() => 
@@ -64,8 +113,8 @@ const Category = () => {
   }
 
   const handleCategoryClick = (id) => {
-    console.log('Category clicked:', id)
-  }
+    router.push(`/category/${id}`);
+  };
 
   // Now we can do conditional rendering
   if (status === "loading")
@@ -84,7 +133,13 @@ const Category = () => {
       </p>
 
       <div className="my-4">
-        <Banner image="https://picsum.photos/1200/400?random=1" />
+        {categoryBanner.redirectUrl ? (
+          <a href={categoryBanner.redirectUrl} target="_blank" rel="noopener noreferrer">
+            <Banner image={categoryBanner.imageUrl} />
+          </a>
+        ) : (
+          <Banner image={categoryBanner.imageUrl} />
+        )}
       </div>
 
       {/* ✅ Featured Categories */}
@@ -92,11 +147,9 @@ const Category = () => {
       {popularCategories.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-6 mb-12">
           {popularCategories.map((cat) => (
-            <StoreCard
-              key={cat._id}
-              image={cat.categoryImage}
-              name={cat.categoryName}
-            />
+            <div key={cat._id} onClick={() => handleCategoryClick(cat._id)}>
+              <StoreCard image={cat.categoryImage} name={cat.categoryName} />
+            </div>
           ))}
         </div>
       ) : (
